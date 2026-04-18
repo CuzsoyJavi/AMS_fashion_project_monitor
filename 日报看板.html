@@ -7,11 +7,11 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
   :root {
-    --blue: #0052D9; --blue-light: #EBF1FF; --blue-subtle: #F5F8FF;
-    --text-1: #1A1A2E; --text-2: #6B7280; --text-3: #9CA3AF;
-    --border: #E5E7EB; --bg: #FAFBFC; --white: #FFF;
-    --red: #E5484D; --red-bg: #FFF5F5; --green: #30A46C; --green-bg: #F2FCF5;
-    --black-bg: #F5F5F8; --radius: 10px;
+    --blue:#0052D9;--blue-light:#EBF1FF;--blue-subtle:#F5F8FF;
+    --text-1:#1A1A2E;--text-2:#6B7280;--text-3:#9CA3AF;
+    --border:#E5E7EB;--bg:#FAFBFC;--white:#FFF;
+    --red:#E5484D;--red-bg:#FFF5F5;--green:#30A46C;
+    --black-bg:#F5F5F8;--radius:10px;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:'Inter',-apple-system,'PingFang SC','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text-1);line-height:1.5;-webkit-font-smoothing:antialiased;font-size:13px;}
@@ -20,22 +20,23 @@
   .header h1{font-size:18px;font-weight:600;letter-spacing:-0.3px;}
   .date-select{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-3);}
   .date-select select{appearance:none;-webkit-appearance:none;padding:5px 28px 5px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text-1);background:var(--white) url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%239CA3AF' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 8px center;cursor:pointer;font-family:inherit;}
-  .date-select select:hover{border-color:var(--blue);}
   .tabs{max-width:1200px;margin:0 auto;padding:16px 28px 0;display:flex;gap:0;border-bottom:1px solid var(--border);}
   .tab{padding:10px 20px;font-size:13px;font-weight:500;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;position:relative;bottom:-1px;}
-  .tab:hover{color:var(--text-2);}
-  .tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600;}
+  .tab:hover{color:var(--text-2);}.tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600;}
   .container{max-width:1200px;margin:0 auto;padding:24px 28px 40px;}
   .panel{display:none;}.panel.active{display:block;}
-  .summary-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:20px;}
+  .summary-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px;}
   .summary-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
-  .summary-card .label{font-size:10px;color:var(--text-3);font-weight:500;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
-  .summary-card .value{font-size:22px;font-weight:700;letter-spacing:-.5px;}
+  .summary-card .label{font-size:11px;color:var(--text-1);font-weight:700;letter-spacing:-.2px;margin-bottom:2px;}
+  .summary-card .sublabel{font-size:9px;color:var(--text-3);margin-bottom:6px;font-weight:400;}
+  .summary-card .value{font-size:16px;font-weight:600;letter-spacing:-.3px;color:var(--text-2);}
   .summary-card .value .unit{font-size:12px;color:var(--text-3);font-weight:400;}
-  .summary-card .change{font-size:11px;font-weight:500;margin-top:2px;}
+  .summary-card .change{font-size:18px;font-weight:700;margin-top:4px;letter-spacing:-.3px;}
   .up{color:var(--green);}.down{color:var(--red);}.flat{color:var(--text-3);}
   .table-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
-  .table-title{padding:12px 16px 10px;font-size:13px;font-weight:600;border-bottom:1px solid var(--border);}
+  .table-title{padding:12px 16px 10px;font-size:13px;font-weight:600;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;}
+  .table-legend{display:flex;gap:12px;flex-wrap:wrap;}
+  .table-legend span{font-size:9px;color:var(--text-2);font-weight:400;}
   table{width:100%;border-collapse:collapse;font-size:11.5px;}
   thead th{padding:6px 10px;text-align:left;font-weight:500;font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.3px;background:var(--bg);border-bottom:1px solid var(--border);}
   thead th:first-child{padding-left:16px;}
@@ -44,28 +45,28 @@
   tbody tr:last-child td{border-bottom:none;}
   tbody tr:hover{background:var(--blue-subtle);}
   .r{text-align:right;}.pct{font-weight:500;font-size:11px;}
-  .col-yellow{background:#FFFBEB;}.col-blue{background:#EFF6FF;}
-  .board-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  @media(max-width:900px){.board-grid{grid-template-columns:1fr;}}
+  .col-yellow{background:#FFFBEB;}.col-blue{background:#EFF6FF;}.col-green{background:#F0FDF4;}
+  .board-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  @media(max-width:1100px){.board-grid{grid-template-columns:1fr;}}
   .board-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
   .board-header{padding:12px 16px;font-size:13px;font-weight:600;border-bottom:1px solid var(--border);}
-  .board-rule{padding:8px 16px;font-size:10px;color:var(--text-2);background:#FAFBFC;border-bottom:1px solid var(--border);line-height:1.6;}
-  .board-label{padding:6px 16px;font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.3px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
+  .board-rule{padding:8px 12px;font-size:9.5px;color:var(--text-2);background:#FAFBFC;border-bottom:1px solid var(--border);line-height:1.6;}
+  .board-label{padding:6px 12px;font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.3px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
   .dot{width:7px;height:7px;border-radius:50%;display:inline-block;}.dot-r{background:var(--red);}.dot-b{background:#374151;}
-  .bt{width:100%;border-collapse:collapse;font-size:11px;}
-  .bt th{padding:5px 8px;text-align:left;font-weight:500;font-size:9.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.2px;background:var(--bg);border-bottom:1px solid var(--border);}
-  .bt th:first-child{padding-left:16px;}
-  .bt td{padding:5px 8px;border-bottom:1px solid #F3F4F6;font-variant-numeric:tabular-nums;}
-  .bt td:first-child{padding-left:16px;}.bt tr:last-child td{border-bottom:none;}
+  .bt{width:100%;border-collapse:collapse;font-size:10.5px;}
+  .bt th{padding:4px 6px;text-align:left;font-weight:500;font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:.2px;background:var(--bg);border-bottom:1px solid var(--border);}
+  .bt th:first-child{padding-left:12px;}
+  .bt td{padding:4px 6px;border-bottom:1px solid #F3F4F6;font-variant-numeric:tabular-nums;}
+  .bt td:first-child{padding-left:12px;}.bt tr:last-child td{border-bottom:none;}
   .rr{background:var(--red-bg);}.bb{background:var(--black-bg);}
-  .tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9.5px;font-weight:500;background:var(--blue-light);color:var(--blue);}
+  .tag{display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:500;background:var(--blue-light);color:var(--blue);}
   .section-desc{font-size:12px;color:var(--text-3);margin-bottom:16px;}
   .footer{text-align:center;padding:28px;color:var(--text-3);font-size:11px;}
   .tree-parent td{background:#F8F9FB;border-top:1px solid var(--border);}
   .tree-child td{background:var(--white);}
   .tree-warn td{background:#FFF8F8 !important;border-left:3px solid var(--red);}
   .tree-warn td:first-child{color:var(--red);}.warn-text{color:var(--red) !important;font-weight:600;}
-  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}.table-scroll table{min-width:600px;}.table-scroll .bt{min-width:700px;}
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}.table-scroll table{min-width:700px;}.table-scroll .bt{min-width:600px;}
   @media(max-width:768px){
     .header{padding:14px 0;}.header-inner{padding:0 16px;flex-direction:column;align-items:flex-start;gap:8px;}
     .header h1{font-size:15px;}.date-select{font-size:11px;}.date-select select{font-size:11px;padding:4px 24px 4px 8px;}
@@ -73,16 +74,16 @@
     .tab{padding:8px 14px;font-size:12px;white-space:nowrap;flex-shrink:0;}
     .container{padding:16px 12px 32px;}
     .summary-row{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
-    .summary-card{padding:10px 12px;}.summary-card .label{font-size:9px;letter-spacing:.3px;}.summary-card .value{font-size:18px;}.summary-card .change{font-size:10px;}
+    .summary-card{padding:10px 12px;}.summary-card .label{font-size:9px;}.summary-card .value{font-size:14px;}.summary-card .change{font-size:15px;}
     .table-title{padding:10px 12px 8px;font-size:12px;}
-    .board-grid{grid-template-columns:1fr;gap:12px;}.board-header{padding:10px 12px;font-size:12px;}.board-rule{padding:6px 12px;font-size:9px;line-height:1.5;}.board-label{padding:5px 12px;font-size:9px;}
+    .board-grid{grid-template-columns:1fr;gap:12px;}.board-header{padding:10px 12px;font-size:12px;}.board-rule{padding:6px 10px;font-size:8.5px;}.board-label{padding:5px 10px;font-size:9px;}
     .section-desc{font-size:11px;margin-bottom:12px;}.footer{padding:20px;font-size:10px;}
+    #warn-grid{grid-template-columns:1fr 1fr 1fr !important;gap:6px;}
   }
-  @media(max-width:420px){.summary-row{grid-template-columns:1fr;}.summary-card .value{font-size:20px;}.header h1{font-size:14px;}.tab{padding:7px 10px;font-size:11px;}}
+  @media(max-width:420px){.summary-row{grid-template-columns:1fr;}.summary-card .value{font-size:14px;}.summary-card .change{font-size:16px;}.header h1{font-size:14px;}.tab{padding:7px 10px;font-size:11px;}}
 </style>
 </head>
 <body>
-
 <div class="header">
   <div class="header-inner">
     <h1>服饰中心 · 专项数据监控看板</h1>
@@ -90,22 +91,19 @@
       <span>监控日期</span>
       <select id="dateSelect" onchange="renderDate(this.value)">
         <option value="2026-04-17" selected>2026-04-17</option>
-        <option value="2026-04-16">2026-04-16</option>
       </select>
       <span style="color:var(--text-3);font-size:11px;margin-left:4px;">环比前一日</span>
     </div>
   </div>
 </div>
-
 <div class="tabs">
   <div class="tab active" onclick="switchTab(0)">专项 01 · 朋友圈九图提收</div>
   <div class="tab" onclick="switchTab(1)">专项 02 · 闭环创意供给</div>
   <div class="tab" onclick="switchTab(2)">专项 03 · 流量侧扶持监控</div>
 </div>
-
 <div class="container">
 
-<!-- Panel 0: 朋友圈九图 -->
+<!-- Panel 0 -->
 <div class="panel active" id="panel0">
   <p class="section-desc">监测朋友圈九图广告的消耗、有消耗客户数、有消耗的展开创意 TID 数</p>
   <div class="summary-row" id="s1-summary"></div>
@@ -118,39 +116,69 @@
   </div>
 </div>
 
-<!-- Panel 1: 闭环创意供给 -->
+<!-- Panel 1 -->
 <div class="panel" id="panel1">
-  <p class="section-desc">监测闭环直播 + 小店链路的新建创意唯一性、在线创意唯一性、有消耗创意唯一性</p>
   <div class="summary-row" id="s2-summary"></div>
   <div class="table-card">
-    <div class="table-title">各赛道明细（按消耗降序）</div>
+    <div class="table-title">
+      <span>各赛道明细（按消耗降序）</span>
+      <div class="table-legend">
+        <span style="color:#B45309;">🟡 新建勤奋度 = 新建去重创意数 / 在线去重创意数</span>
+        <span style="color:#15803D;">🟢 新建新鲜率 = 新建全新创意数 / 新建去重创意数</span>
+        <span style="color:#1D4ED8;">🔵 在线创意消耗率 = 消耗去重创意数 / 在线去重创意数</span>
+      </div>
+    </div>
     <div class="table-scroll"><table>
-      <thead><tr><th>行业</th><th class="r">消耗(万)</th><th class="r">环比</th><th class="r">新建创意数</th><th class="r">环比</th><th class="r">在线创意数</th><th class="r">环比</th><th class="r">消耗创意数</th><th class="r">环比</th><th class="r col-yellow" style="font-size:9px;">新建创意占比</th><th class="r col-blue" style="font-size:9px;">有消耗创意占比</th></tr></thead>
+      <thead><tr><th>行业</th><th class="r">消耗(万)</th><th class="r">环比</th><th class="r">新建去重创意数</th><th class="r">环比</th><th class="r">新建全新创意数</th><th class="r">环比</th><th class="r">在线去重创意数</th><th class="r">环比</th><th class="r">消耗去重创意数</th><th class="r">环比</th><th class="r col-yellow" style="font-size:9px;">新建勤奋度</th><th class="r col-green" style="font-size:9px;">新建新鲜率</th><th class="r col-blue" style="font-size:9px;">在线消耗率</th></tr></thead>
       <tbody id="s2-tbody"></tbody>
     </table></div>
   </div>
-  <!-- 红黑榜 -->
-  <div class="board-grid">
-    <div class="board-card">
-      <div class="board-header">创意新建数量 · 红黑榜</div>
-      <div class="board-rule"><b>红榜：</b>新建创意占比（=新建创意唯一性ID数÷在线创意唯一性ID数）高于客户所在二级行业均值，且新建创意数环比增长超过+20%，按新建创意占比从高到低取 Top5（仅消耗>1w的客户可上榜）<br><b>黑榜：</b>新建创意占比低于客户所在二级行业均值，且新建创意数环比下降超过-20%，按新建创意占比从低到高取 Top10（仅消耗>1w的客户可上榜）</div>
-      <div class="board-label"><span class="dot dot-r"></span>红榜 TOP 5</div>
-      <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗(万)</th><th class="r">消耗环比</th><th class="r">新建创意数</th><th class="r">新建环比</th><th class="r">在线创意数</th><th class="r">在线环比</th><th class="r">新建占比</th></tr></thead><tbody id="board-sr"></tbody></table></div>
-      <div class="board-label"><span class="dot dot-b"></span>黑榜 TOP 10</div>
-      <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗(万)</th><th class="r">消耗环比</th><th class="r">新建创意数</th><th class="r">新建环比</th><th class="r">在线创意数</th><th class="r">在线环比</th><th class="r">新建占比</th></tr></thead><tbody id="board-sb"></tbody></table></div>
+
+  <!-- 黑榜预警汇总 -->
+  <div style="margin-bottom:20px;">
+    <!-- 红色长条：多榜客户 -->
+    <div id="warn-multi" style="background:#F8F5FF;border:1px solid #DDD6FE;border-radius:var(--radius);padding:12px 16px;margin-bottom:10px;"></div>
+    <!-- 三个并列色块 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;" id="warn-grid">
+      <div id="warn-d" style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:var(--radius);padding:10px 14px;"></div>
+      <div id="warn-f" style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius);padding:10px 14px;"></div>
+      <div id="warn-c" style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:var(--radius);padding:10px 14px;"></div>
     </div>
+  </div>
+
+  <!-- 红黑榜 3栏 -->
+  <div class="board-grid">
+    <!-- 新建勤奋度 -->
     <div class="board-card">
-      <div class="board-header">创意质量 · 红黑榜</div>
-      <div class="board-rule"><b>红榜：</b>有消耗的创意占比（=有消耗的创意唯一性ID数÷在线创意唯一性ID数）高于客户所在二级行业均值，按有消耗创意占比从高到低取 Top5（仅消耗>1w的客户可上榜）<br><b>黑榜：</b>有消耗的创意占比低于客户所在二级行业均值，按有消耗创意占比从低到高取 Top10（仅消耗>1w的客户可上榜）</div>
+      <div class="board-header">新建勤奋度 · 红黑榜</div>
+      <div class="board-rule"><b>红榜：</b>新建勤奋度（=新建去重创意数÷在线去重创意数）高于二级行业均值，且新建去重创意数环比>+20%，按勤奋度从高到低取 Top5<br><b>黑榜：</b>勤奋度低于均值，且环比<-20%，按勤奋度从低到高取 Top10<br><span style="color:var(--text-3);font-size:8.5px;">仅消耗≥1万的客户可上榜</span></div>
       <div class="board-label"><span class="dot dot-r"></span>红榜 TOP 5</div>
-      <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗(万)</th><th class="r">消耗环比</th><th class="r">消耗创意数</th><th class="r">环比</th><th class="r">在线创意数</th><th class="r">环比</th><th class="r">消耗创意占比</th></tr></thead><tbody id="board-qr"></tbody></table></div>
+      <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗</th><th class="r">环比</th><th class="r">新建数</th><th class="r">环比</th><th class="r">在线数</th><th class="r">环比</th><th class="r">勤奋度</th></tr></thead><tbody id="board-dr"></tbody></table></div>
       <div class="board-label"><span class="dot dot-b"></span>黑榜 TOP 10</div>
-      <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗(万)</th><th class="r">消耗环比</th><th class="r">消耗创意数</th><th class="r">环比</th><th class="r">在线创意数</th><th class="r">环比</th><th class="r">消耗创意占比</th></tr></thead><tbody id="board-qb"></tbody></table></div>
+      <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗</th><th class="r">环比</th><th class="r">新建数</th><th class="r">环比</th><th class="r">在线数</th><th class="r">环比</th><th class="r">勤奋度</th></tr></thead><tbody id="board-db"></tbody></table></div>
+    </div>
+    <!-- 新建新鲜度 -->
+    <div class="board-card">
+      <div class="board-header">新建新鲜度 · 红黑榜</div>
+      <div class="board-rule"><b>红榜：</b>新鲜率（=新建全新创意数÷新建去重创意数）高于二级行业均值，且全新创意数环比>+20%，按新鲜率从高到低取 Top5<br><b>黑榜：</b>新鲜率低于均值，且环比<-20%，按新鲜率从低到高取 Top10<br><span style="color:var(--text-3);font-size:8.5px;">仅消耗≥1万的客户可上榜</span></div>
+      <div class="board-label"><span class="dot dot-r"></span>红榜 TOP 5</div>
+      <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗</th><th class="r">环比</th><th class="r">全新数</th><th class="r">环比</th><th class="r">新建数</th><th class="r">环比</th><th class="r">新鲜率</th></tr></thead><tbody id="board-fr"></tbody></table></div>
+      <div class="board-label"><span class="dot dot-b"></span>黑榜 TOP 10</div>
+      <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗</th><th class="r">环比</th><th class="r">全新数</th><th class="r">环比</th><th class="r">新建数</th><th class="r">环比</th><th class="r">新鲜率</th></tr></thead><tbody id="board-fb"></tbody></table></div>
+    </div>
+    <!-- 在线消耗率 -->
+    <div class="board-card">
+      <div class="board-header">在线消耗率 · 红黑榜</div>
+      <div class="board-rule"><b>红榜：</b>在线消耗率（=消耗去重创意数÷在线去重创意数）高于二级行业均值，按消耗率从高到低取 Top5<br><b>黑榜：</b>消耗率低于均值，按消耗率从低到高取 Top10<br><span style="color:var(--text-3);font-size:8.5px;">仅消耗≥1万的客户可上榜</span></div>
+      <div class="board-label"><span class="dot dot-r"></span>红榜 TOP 5</div>
+      <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗</th><th class="r">环比</th><th class="r">消耗创意数</th><th class="r">环比</th><th class="r">在线数</th><th class="r">环比</th><th class="r">消耗率</th></tr></thead><tbody id="board-cr"></tbody></table></div>
+      <div class="board-label"><span class="dot dot-b"></span>黑榜 TOP 10</div>
+      <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗</th><th class="r">环比</th><th class="r">消耗创意数</th><th class="r">环比</th><th class="r">在线数</th><th class="r">环比</th><th class="r">消耗率</th></tr></thead><tbody id="board-cb"></tbody></table></div>
     </div>
   </div>
 </div>
 
-<!-- Panel 2: 流量侧扶持监控 -->
+<!-- Panel 2 -->
 <div class="panel" id="panel2">
   <p class="section-desc">监测流量侧重点扶持客户的消耗、曝光创意唯一性ID数、目标出价、ROI出价</p>
   <div style="background:linear-gradient(135deg,#EBF1FF 0%,#F5F8FF 100%);border:1px solid #D4E0F7;border-radius:var(--radius);padding:14px 18px;margin-bottom:18px;font-size:12px;line-height:1.7;color:var(--text-1);">
@@ -170,81 +198,134 @@
 </div>
 
 </div>
-
 <div class="footer">服饰中心 · 专项数据监控看板 — 由傻福 🦞 自动生成</div>
 
 <script>
-const DATA = {"2026-04-16": {"date": "2026-04-16", "p1": {"summary": [{"label": "服饰大盘消耗", "value": "72.7", "unit": "万", "change": "+5%", "cls": "up"}, {"label": "有消耗客户数", "value": "1,052", "change": "-3%", "cls": "down"}, {"label": "有消耗展开创意 TID 数", "value": "13,152", "change": "-0%", "cls": "down"}], "rows": [["运动鞋服", "25.6", "+9%", "up", "37", "+3%", "up", "2,990", "+2%", "up"], ["奢品服饰", "14.4", "+7%", "up", "21", "0%", "flat", "420", "0%", "flat"], ["大众潮流", "9.3", "+14%", "up", "10", "0%", "flat", "458", "+4%", "up"], ["女装(童装)", "6.9", "-4%", "down", "49", "0%", "flat", "1,394", "-3%", "down"], ["珠宝", "4.8", "+5%", "up", "84", "-3%", "down", "866", "+3%", "up"], ["其他", "2.1", "-19%", "down", "541", "-6%", "down", "2,873", "-6%", "down"], ["文玩", "2.1", "+136%", "up", "41", "-5%", "down", "447", "+5%", "up"], ["综合", "2.1", "-8%", "down", "5", "0%", "flat", "182", "+26%", "up"], ["箱包鞋靴", "1.4", "-3%", "down", "78", "-4%", "down", "1,072", "-4%", "down"], ["贴身衣物", "1.4", "-19%", "down", "61", "+7%", "up", "910", "+9%", "up"], ["男装", "1.3", "+5%", "up", "60", "+2%", "up", "946", "-2%", "down"], ["潮奢珠宝配饰", "0.9", "-47%", "down", "7", "-12%", "down", "84", "+5%", "up"], ["跑品客户", "0.3", "+22%", "up", "22", "-4%", "down", "232", "+13%", "up"], ["配饰", "0.1", "-58%", "down", "18", "0%", "flat", "65", "-6%", "down"], ["运动用品", "0.0", "-28%", "down", "29", "+4%", "up", "165", "+9%", "up"], ["钟表", "0.0", "-3%", "down", "5", "+25%", "up", "29", "-6%", "down"], ["潮奢手表", "0.0", "+44%", "up", "2", "0%", "flat", "19", "+12%", "up"]]}, "p2": {"summary": [{"label": "新建创意唯一性ID数", "value": "279,033", "change": "-29%", "cls": "down"}, {"label": "在线创意唯一性ID数", "value": "2,175,856", "change": "+1%", "cls": "up"}, {"label": "消耗创意唯一性ID数", "value": "150,395", "change": "+3%", "cls": "up"}], "rows": [["贴身衣物", "202.1", "+15%", "up", "80,360", "-17%", "down", "383,296", "-1%", "down", "41,555", "-2%", "down", "21.0%", "10.8%"], ["男装", "82.1", "+0%", "up", "15,961", "-17%", "down", "96,710", "+0%", "up", "17,829", "+2%", "up", "16.5%", "18.4%"], ["女装(童装)", "32.2", "-2%", "down", "16,893", "-10%", "down", "109,158", "+4%", "up", "9,543", "-2%", "down", "15.5%", "8.7%"], ["箱包鞋靴", "31.7", "-6%", "down", "14,000", "-11%", "down", "111,451", "-0%", "down", "10,640", "-6%", "down", "12.6%", "9.5%"], ["珠宝", "29.7", "-7%", "down", "11,919", "-38%", "down", "120,001", "+0%", "up", "7,491", "+10%", "up", "9.9%", "6.2%"], ["运动鞋服", "24.6", "+3%", "up", "9,955", "-11%", "down", "91,769", "+3%", "up", "8,812", "+9%", "up", "10.8%", "9.6%"], ["运动用品", "17.3", "+22%", "up", "7,539", "-24%", "down", "42,600", "-2%", "down", "4,363", "+1%", "up", "17.7%", "10.2%"], ["跑品客户", "16.5", "+8%", "up", "7,348", "-9%", "down", "18,690", "+8%", "up", "3,184", "+8%", "up", "39.3%", "17.0%"], ["配饰", "9.4", "+24%", "up", "3,549", "-26%", "down", "15,310", "+0%", "up", "2,542", "+4%", "up", "23.2%", "16.6%"], ["文玩", "5.6", "+7%", "up", "4,732", "-34%", "down", "51,208", "-3%", "down", "3,222", "-6%", "down", "9.2%", "6.3%"]]}, "board": {"sr": [["贴身衣物", "蕉内", "3.2", "+310%", "up", "49", "+4800%", "up", "67", "+16%", "up", "73.1%"], ["贴身衣物", "广州市无痕内衣服饰有限公司", "1.1", "-34%", "down", "2,141", "+52%", "up", "2,938", "+22%", "up", "72.9%"], ["贴身衣物", "欧贝儿", "2.2", "+427%", "up", "312", "+46%", "up", "437", "+36%", "up", "71.4%"], ["箱包鞋靴", "温州市高攀商贸有限公司", "1.6", "+83%", "up", "1,611", "+110%", "up", "2,332", "+62%", "up", "69.1%"], ["箱包鞋靴", "永幸皮具", "1.5", "+171%", "up", "119", "+95%", "up", "178", "+9%", "up", "66.9%"]], "sb": [["男装", "嘉兴奥仕捷", "1.2", "+10%", "up", "0", "-100%", "down", "72", "0%", "flat", "0.0%"], ["运动用品", "淄博佐佑健身器材有限公司", "1.3", "-8%", "down", "0", "-100%", "down", "975", "-0%", "down", "0.0%"], ["女装", "海口秀英诗娟电子商务中心", "1.4", "-30%", "down", "2", "-100%", "down", "2,126", "-2%", "down", "0.1%"], ["女装", "内蒙古迁克商贸有限公司", "1.2", "+35%", "up", "6", "-65%", "down", "2,113", "-1%", "down", "0.3%"], ["贴身衣物", "佛山市禅城区索盾优选贸易商行(个体工商户)", "1.5", "+102%", "up", "6", "-62%", "down", "871", "-2%", "down", "0.7%"], ["贴身衣物", "润微", "1.2", "-6%", "down", "23", "-92%", "down", "2,147", "-9%", "down", "1.1%"], ["贴身衣物", "幸棉", "1.3", "+212%", "up", "31", "-38%", "down", "2,414", "0%", "flat", "1.3%"], ["箱包鞋靴", "温州市齐同网络科技有限公司", "1.1", "+53%", "up", "9", "-96%", "down", "596", "-19%", "down", "1.5%"], ["贴身衣物", "汕头市杰奎琳内衣有限公司", "1.0", "+127%", "up", "28", "-87%", "down", "918", "+5%", "up", "3.1%"], ["贴身衣物", "知音草", "2.2", "+21%", "up", "484", "-39%", "down", "13,595", "-1%", "down", "3.6%"]], "qr": [["珠宝", "巴宝莎眼镜(深圳)有限责任公司", "2.6", "-23%", "down", "42", "+31%", "up", "43", "+30%", "up", "97.7%"], ["珠宝", "深圳市芭莎铭创技术科技有限公司", "3.9", "+15%", "up", "215", "+11%", "up", "232", "+8%", "up", "92.7%"], ["配饰", "广州树语商贸有限公司", "2.2", "+15%", "up", "225", "+6%", "up", "260", "+12%", "up", "86.5%"], ["男装", "嘉兴奥仕捷", "1.2", "+10%", "up", "60", "0%", "flat", "72", "0%", "flat", "83.3%"], ["珠宝", "广东很久文化传播有限公司", "1.3", "-45%", "down", "228", "+13%", "up", "287", "+5%", "up", "79.4%"]], "qb": [["贴身衣物", "曲线主义", "1.1", "+27%", "up", "478", "+21%", "up", "15,760", "+1%", "up", "3.0%"], ["运动鞋服", "SIINSIIN", "2.9", "+143%", "up", "1,202", "+45%", "up", "28,451", "+4%", "up", "4.2%"], ["贴身衣物", "茵暖", "2.2", "-10%", "down", "880", "+15%", "up", "16,951", "+2%", "up", "5.2%"], ["贴身衣物", "知音草", "2.2", "+21%", "up", "707", "-4%", "down", "13,595", "-1%", "down", "5.2%"], ["贴身衣物", "蔓雅夫人", "1.6", "+34%", "up", "315", "-3%", "down", "4,362", "+1%", "up", "7.2%"], ["跑品客户", "保定平头哥箱包制造有限公司", "1.0", "-50%", "down", "130", "+14%", "up", "1,589", "+10%", "up", "8.2%"], ["贴身衣物", "BONAS/宝娜斯", "2.6", "-6%", "down", "1,359", "-2%", "down", "16,196", "+6%", "up", "8.4%"], ["女装", "茉寻", "1.5", "-8%", "down", "557", "-14%", "down", "6,432", "+1%", "up", "8.7%"], ["贴身衣物", "汕头市杰奎琳内衣有限公司", "1.0", "+127%", "up", "86", "+41%", "up", "918", "+5%", "up", "9.4%"], ["男装", "贴牌李于忠", "2.0", "+1006%", "up", "170", "+139%", "up", "1,790", "-4%", "down", "9.5%"]]}, "p3": {"tree": [{"name": "西鸣", "warn": true, "cost": "27.8", "cost_r": "+19%", "cost_c": "up", "expo": "2,192", "expo_r": "+2%", "expo_c": "up", "bid": "66.8", "bid_r": "+6%", "bid_c": "up", "roi": "6.41", "roi_r": "+0%", "roi_c": "up", "children": [{"name": "微信视频号", "cost": "25.4", "cost_r": "+18%", "cost_c": "up", "expo": "1,606", "expo_r": "+1%", "expo_c": "up", "bid": "66.1", "bid_r": "-1%", "bid_c": "down", "roi": "5.65", "roi_r": "-7%", "roi_c": "down"}, {"name": "微信朋友圈", "cost": "2.4", "cost_r": "+35%", "cost_c": "up", "expo": "1,456", "expo_r": "+5%", "expo_c": "up", "bid": "68.8", "bid_r": "+25%", "bid_c": "up", "roi": "10.98", "roi_r": "+46%", "roi_c": "up"}]}, {"name": "重庆爆一爆", "warn": true, "cost": "13.7", "cost_r": "+28%", "cost_c": "up", "expo": "2,149", "expo_r": "-15%", "expo_c": "down", "bid": "98.0", "bid_r": "+7%", "bid_c": "up", "roi": "5.92", "roi_r": "-26%", "roi_c": "down", "children": [{"name": "微信视频号", "cost": "13.4", "cost_r": "+27%", "cost_c": "up", "expo": "1,782", "expo_r": "-13%", "expo_c": "down", "bid": "95.9", "bid_r": "+4%", "bid_c": "up", "roi": "5.88", "roi_r": "-26%", "roi_c": "down"}, {"name": "微信朋友圈", "cost": "0.3", "cost_r": "+133%", "cost_c": "up", "expo": "1,071", "expo_r": "-17%", "expo_c": "down", "bid": "128.3", "bid_r": "+34%", "bid_c": "up", "roi": "46.42", "roi_r": "+461%", "roi_c": "up"}]}, {"name": "猫人夏宇", "warn": true, "cost": "12.5", "cost_r": "+13%", "cost_c": "up", "expo": "2,945", "expo_r": "+3%", "expo_c": "up", "bid": "41.5", "bid_r": "-2%", "bid_c": "down", "roi": "3.59", "roi_r": "-3%", "roi_c": "down", "children": [{"name": "微信视频号", "cost": "10.7", "cost_r": "+4%", "cost_c": "up", "expo": "2,291", "expo_r": "-0%", "expo_c": "down", "bid": "37.8", "bid_r": "-6%", "bid_c": "down", "roi": "3.52", "roi_r": "-1%", "roi_c": "down"}, {"name": "微信朋友圈", "cost": "1.7", "cost_r": "+134%", "cost_c": "up", "expo": "2,015", "expo_r": "+16%", "expo_c": "up", "bid": "46.7", "bid_r": "+2%", "bid_c": "up", "roi": "3.83", "roi_r": "-24%", "roi_c": "down"}]}, {"name": "之禾", "warn": true, "cost": "4.0", "cost_r": "-2%", "cost_c": "down", "expo": "220", "expo_r": "-34%", "expo_c": "down", "bid": "nan", "bid_r": "0%", "bid_c": "flat", "roi": "9.70", "roi_r": "-0%", "roi_c": "down", "children": [{"name": "微信朋友圈", "cost": "3.6", "cost_r": "+15%", "cost_c": "up", "expo": "186", "expo_r": "-33%", "expo_c": "down", "bid": "nan", "bid_r": "0%", "bid_c": "flat", "roi": "9.70", "roi_r": "-0%", "roi_c": "down"}, {"name": "微信视频号", "cost": "0.4", "cost_r": "-57%", "cost_c": "down", "expo": "119", "expo_r": "-33%", "expo_c": "down", "bid": "nan", "bid_r": "0%", "bid_c": "flat", "roi": "9.76", "roi_r": "+0%", "roi_c": "up"}]}]}}, "2026-04-17": {"date": "2026-04-17", "p1": {"summary": [{"label": "服饰大盘消耗", "value": "69.4", "unit": "万", "change": "-5%", "cls": "down"}, {"label": "有消耗客户数", "value": "1,033", "change": "-2%", "cls": "down"}, {"label": "有消耗展开创意 TID 数", "value": "12,715", "change": "-3%", "cls": "down"}], "rows": [["运动鞋服", "22.3", "-13%", "down", "38", "+3%", "up", "3,003", "+0%", "up"], ["奢品服饰", "14.2", "-1%", "down", "21", "0%", "flat", "499", "+19%", "up"], ["大众潮流", "9.5", "+3%", "up", "10", "0%", "flat", "471", "+3%", "up"], ["女装(童装)", "5.9", "-15%", "down", "45", "-8%", "down", "1,462", "+5%", "up"], ["珠宝", "4.8", "+0%", "up", "81", "-4%", "down", "864", "-0%", "down"], ["箱包鞋靴", "3.2", "+131%", "up", "83", "+6%", "up", "1,019", "-5%", "down"], ["综合", "2.1", "+2%", "up", "5", "0%", "flat", "197", "+8%", "up"], ["文玩", "2.0", "-5%", "down", "40", "-2%", "down", "360", "-19%", "down"], ["其他", "1.9", "-11%", "down", "523", "-3%", "down", "2,676", "-7%", "down"], ["贴身衣物", "1.4", "+4%", "up", "57", "-7%", "down", "790", "-13%", "down"], ["男装", "1.1", "-16%", "down", "61", "+2%", "up", "966", "+2%", "up"], ["跑品客户", "0.5", "+48%", "up", "22", "0%", "flat", "206", "-11%", "down"], ["潮奢珠宝配饰", "0.3", "-61%", "down", "6", "-14%", "down", "87", "+4%", "up"], ["配饰", "0.1", "-17%", "down", "17", "-6%", "down", "66", "+2%", "up"], ["运动用品", "0.0", "+32%", "up", "26", "-10%", "down", "175", "+6%", "up"], ["钟表", "0.0", "-11%", "down", "4", "-20%", "down", "31", "+7%", "up"], ["潮奢手表", "0.0", "+160%", "up", "3", "+50%", "up", "32", "+68%", "up"]]}, "p2": {"summary": [{"label": "新建创意唯一性ID数", "value": "297,770", "change": "+7%", "cls": "up"}, {"label": "在线创意唯一性ID数", "value": "2,148,149", "change": "-1%", "cls": "down"}, {"label": "消耗创意唯一性ID数", "value": "158,136", "change": "+5%", "cls": "up"}], "rows": [["贴身衣物", "183.9", "-9%", "down", "93,845", "+17%", "up", "390,873", "+2%", "up", "42,815", "+3%", "up", "24.0%", "11.0%"], ["男装", "98.0", "+19%", "up", "20,747", "+30%", "up", "97,329", "+1%", "up", "18,629", "+4%", "up", "21.3%", "19.1%"], ["女装(童装)", "34.4", "+7%", "up", "14,704", "-13%", "down", "111,590", "+2%", "up", "10,014", "+5%", "up", "13.2%", "9.0%"], ["箱包鞋靴", "34.2", "+8%", "up", "14,787", "+6%", "up", "110,291", "-1%", "down", "11,296", "+6%", "up", "13.4%", "10.2%"], ["珠宝", "30.9", "+4%", "up", "14,581", "+22%", "up", "113,992", "-5%", "down", "8,534", "+14%", "up", "12.8%", "7.5%"], ["运动鞋服", "27.3", "+11%", "up", "13,091", "+32%", "up", "92,588", "+1%", "up", "9,448", "+7%", "up", "14.1%", "10.2%"], ["跑品客户", "21.0", "+28%", "up", "8,833", "+20%", "up", "19,904", "+6%", "up", "3,546", "+11%", "up", "44.4%", "17.8%"], ["运动用品", "17.0", "-2%", "down", "9,726", "+29%", "up", "44,039", "+3%", "up", "4,793", "+10%", "up", "22.1%", "10.9%"], ["配饰", "12.7", "+36%", "up", "4,650", "+31%", "up", "16,079", "+5%", "up", "2,592", "+2%", "up", "28.9%", "16.1%"], ["文玩", "5.8", "+3%", "up", "5,064", "+7%", "up", "50,648", "-1%", "down", "3,286", "+2%", "up", "10.0%", "6.5%"]]}, "board": {"sr": [["男装", "杭州乐量文化传媒有限公司", "4.8", "+40%", "up", "1,225", "+175%", "up", "599", "-19%", "down", "204.5%"], ["贴身衣物", "草本初色文俊", "17.4", "+302%", "up", "8,781", "+1010%", "up", "6,627", "+39%", "up", "132.5%"], ["运动用品", "杭州溯界文化创意有限公司", "3.2", "-8%", "down", "1,501", "+116%", "up", "1,556", "+23%", "up", "96.5%"], ["女装", "之禾", "4.3", "+0%", "up", "324", "+49%", "up", "346", "+5%", "up", "93.6%"], ["贴身衣物", "猫人", "1.1", "-33%", "down", "440", "+47%", "up", "547", "+8%", "up", "80.4%"]], "sb": [["女装", "赫基集团", "1.1", "+26%", "up", "30", "-41%", "down", "11,074", "-1%", "down", "0.3%"], ["男装", "贴牌李于忠", "3.8", "+93%", "up", "77", "-59%", "down", "1,775", "-1%", "down", "4.3%"], ["贴身衣物", "亲相见", "3.6", "-21%", "down", "296", "-24%", "down", "6,579", "-0%", "down", "4.5%"], ["贴身衣物", "北京润森发贸易有限公司", "2.7", "-17%", "down", "20", "-81%", "down", "412", "+1%", "up", "4.9%"], ["男装", "合肥邦鑫服饰有限公司", "14.8", "+62%", "up", "74", "-46%", "down", "544", "-0%", "down", "13.6%"], ["箱包鞋靴", "湖南奥讯网络科技有限公司", "2.8", "+7%", "up", "214", "-72%", "down", "1,437", "-41%", "down", "14.9%"], ["贴身衣物", "洋奢", "1.6", "-24%", "down", "432", "-63%", "down", "2,782", "-24%", "down", "15.5%"], ["珠宝", "左氏", "2.4", "-5%", "down", "206", "-52%", "down", "1,159", "+9%", "up", "17.8%"], ["配饰", "郑州旋顺商贸有限公司", "1.4", "+17%", "up", "210", "-24%", "down", "1,089", "-9%", "down", "19.3%"], ["贴身衣物", "蕉内", "3.3", "+4%", "up", "20", "-59%", "down", "86", "+28%", "up", "23.3%"]], "qr": [["珠宝", "深圳市芭莎铭创技术科技有限公司", "2.6", "-35%", "down", "198", "-8%", "down", "208", "-10%", "down", "95.2%"], ["配饰", "广州树语商贸有限公司", "2.1", "-5%", "down", "243", "+8%", "up", "295", "+13%", "up", "82.4%"], ["贴身衣物", "佛山市红与红文化传媒有限公司", "1.7", "+44%", "up", "41", "0%", "flat", "53", "nan%", "down", "77.4%"], ["女装", "之禾", "4.3", "+0%", "up", "244", "+3%", "up", "346", "+5%", "up", "70.5%"], ["珠宝", "广东很久文化传播有限公司", "1.4", "+9%", "up", "193", "-15%", "down", "280", "-2%", "down", "68.9%"]], "qb": [["贴身衣物", "完美记忆", "1.5", "+55%", "up", "497", "-11%", "down", "26,891", "+2%", "up", "1.8%"], ["女装", "赫基集团", "1.1", "+26%", "up", "299", "-2%", "down", "11,074", "-1%", "down", "2.7%"], ["贴身衣物", "茵暖", "2.4", "+9%", "up", "863", "-2%", "down", "17,285", "+2%", "up", "5.0%"], ["运动鞋服", "SIINSIIN", "3.8", "+34%", "up", "1,502", "+25%", "up", "28,079", "-1%", "down", "5.3%"], ["贴身衣物", "知音草", "1.4", "-34%", "down", "754", "+7%", "up", "13,555", "-0%", "down", "5.6%"], ["运动用品", "扬州奥锐克体育用品有限公司", "1.1", "+17%", "up", "266", "-5%", "down", "3,457", "-0%", "down", "7.7%"], ["贴身衣物", "BONAS/宝娜斯", "2.4", "-10%", "down", "1,337", "-2%", "down", "16,388", "+1%", "up", "8.2%"], ["贴身衣物", "蔓雅夫人", "1.3", "-17%", "down", "408", "+30%", "up", "4,556", "+4%", "up", "9.0%"], ["跑品客户", "保定平头哥箱包制造有限公司", "1.9", "+83%", "up", "134", "+3%", "up", "1,455", "-8%", "down", "9.2%"], ["运动用品", "义乌市暗尘网络科技有限公司", "1.3", "+249%", "up", "73", "+92%", "up", "767", "+65%", "up", "9.5%"]]}, "p3": {"tree": [{"name": "西鸣", "warn": true, "cost": "23.4", "cost_r": "-16%", "cost_c": "down", "expo": "2,355", "expo_r": "+7%", "expo_c": "up", "bid": "70.2", "bid_r": "+5%", "bid_c": "up", "roi": "5.36", "roi_r": "-16%", "roi_c": "down", "children": [{"name": "微信视频号", "cost": "21.0", "cost_r": "-17%", "cost_c": "down", "expo": "1,886", "expo_r": "+17%", "expo_c": "up", "bid": "68.9", "bid_r": "+4%", "bid_c": "up", "roi": "4.95", "roi_r": "-12%", "roi_c": "down"}, {"name": "微信朋友圈", "cost": "2.3", "cost_r": "-4%", "cost_c": "down", "expo": "1,304", "expo_r": "-10%", "expo_c": "down", "bid": "73.1", "bid_r": "+6%", "bid_c": "up", "roi": "10.06", "roi_r": "-8%", "roi_c": "down"}]}, {"name": "猫人夏宇", "warn": true, "cost": "10.7", "cost_r": "-14%", "cost_c": "down", "expo": "2,706", "expo_r": "-8%", "expo_c": "down", "bid": "42.7", "bid_r": "+3%", "bid_c": "up", "roi": "3.53", "roi_r": "-2%", "roi_c": "down", "children": [{"name": "微信视频号", "cost": "9.9", "cost_r": "-8%", "cost_c": "down", "expo": "2,206", "expo_r": "-4%", "expo_c": "down", "bid": "42.3", "bid_r": "+12%", "bid_c": "up", "roi": "3.48", "roi_r": "-1%", "roi_c": "down"}, {"name": "微信朋友圈", "cost": "0.8", "cost_r": "-53%", "cost_c": "down", "expo": "1,624", "expo_r": "-19%", "expo_c": "down", "bid": "44.5", "bid_r": "-5%", "bid_c": "down", "roi": "3.86", "roi_r": "+1%", "roi_c": "up"}]}, {"name": "重庆爆一爆", "warn": true, "cost": "10.3", "cost_r": "-25%", "cost_c": "down", "expo": "1,849", "expo_r": "-14%", "expo_c": "down", "bid": "100.8", "bid_r": "+3%", "bid_c": "up", "roi": "10.27", "roi_r": "+73%", "roi_c": "up", "children": [{"name": "微信视频号", "cost": "10.0", "cost_r": "-25%", "cost_c": "down", "expo": "1,557", "expo_r": "-13%", "expo_c": "down", "bid": "96.7", "bid_r": "+1%", "bid_c": "up", "roi": "6.93", "roi_r": "+18%", "roi_c": "up"}, {"name": "微信朋友圈", "cost": "0.3", "cost_r": "+1%", "cost_c": "up", "expo": "856", "expo_r": "-20%", "expo_c": "down", "bid": "128.1", "bid_r": "-0%", "bid_c": "down", "roi": "52.74", "roi_r": "+14%", "roi_c": "up"}]}, {"name": "之禾", "warn": true, "cost": "3.9", "cost_r": "-1%", "cost_c": "down", "expo": "238", "expo_r": "+8%", "expo_c": "up", "bid": "nan", "bid_r": "0%", "bid_c": "flat", "roi": "9.72", "roi_r": "+0%", "roi_c": "up", "children": [{"name": "微信朋友圈", "cost": "2.6", "cost_r": "-27%", "cost_c": "down", "expo": "184", "expo_r": "-1%", "expo_c": "down", "bid": "nan", "bid_r": "0%", "bid_c": "flat", "roi": "9.72", "roi_r": "+0%", "roi_c": "up"}, {"name": "微信视频号", "cost": "1.3", "cost_r": "+228%", "cost_c": "up", "expo": "134", "expo_r": "+13%", "expo_c": "up", "bid": "nan", "bid_r": "0%", "bid_c": "flat", "roi": "9.72", "roi_r": "-0%", "roi_c": "down"}]}]}}};
-
+const DATA = {"2026-04-17": {"date": "2026-04-17", "p1": {"summary": [{"label": "服饰大盘消耗", "value": "69.4", "unit": "万", "change": "-5%", "cls": "down"}, {"label": "有消耗客户数", "value": "1,033", "change": "-2%", "cls": "down"}, {"label": "有消耗展开创意 TID 数", "value": "12,715", "change": "-3%", "cls": "down"}], "rows": [["运动鞋服", "22.3", "-13%", "down", "38", "+3%", "up", "3,003", "+0%", "up"], ["奢品服饰", "14.2", "-1%", "down", "21", "0%", "flat", "499", "+19%", "up"], ["大众潮流", "9.5", "+3%", "up", "10", "0%", "flat", "471", "+3%", "up"], ["女装(童装)", "5.9", "-15%", "down", "45", "-8%", "down", "1,462", "+5%", "up"], ["珠宝", "4.8", "+0%", "up", "81", "-4%", "down", "864", "-0%", "down"], ["箱包鞋靴", "3.2", "+131%", "up", "83", "+6%", "up", "1,019", "-5%", "down"], ["综合", "2.1", "+2%", "up", "5", "0%", "flat", "197", "+8%", "up"], ["文玩", "2.0", "-5%", "down", "40", "-2%", "down", "360", "-19%", "down"], ["其他", "1.9", "-11%", "down", "523", "-3%", "down", "2,676", "-7%", "down"], ["贴身衣物", "1.4", "+4%", "up", "57", "-7%", "down", "790", "-13%", "down"], ["男装", "1.1", "-16%", "down", "61", "+2%", "up", "966", "+2%", "up"], ["跑品客户", "0.5", "+48%", "up", "22", "0%", "flat", "206", "-11%", "down"], ["潮奢珠宝配饰", "0.3", "-61%", "down", "6", "-14%", "down", "87", "+4%", "up"], ["配饰", "0.1", "-17%", "down", "17", "-6%", "down", "66", "+2%", "up"], ["运动用品", "0.0", "+32%", "up", "26", "-10%", "down", "175", "+6%", "up"], ["钟表", "0.0", "-11%", "down", "4", "-20%", "down", "31", "+7%", "up"], ["潮奢手表", "0.0", "+160%", "up", "3", "+50%", "up", "32", "+68%", "up"]]}, "p2": {"summary": [{"label": "新建创意唯一性ID数", "sublabel": "新建去重创意数", "value": "297,770", "change": "+7%", "cls": "up"}, {"label": "新建创意中新增唯一性ID数", "sublabel": "新建全新创意数", "value": "134,513", "change": "-2%", "cls": "down"}, {"label": "在线创意唯一性ID数", "sublabel": "在线去重创意数", "value": "2,147,690", "change": "-1%", "cls": "down"}, {"label": "消耗创意唯一性ID数", "sublabel": "消耗去重创意数", "value": "158,136", "change": "+5%", "cls": "up"}], "rows": [["贴身衣物", "183.9", "-9%", "down", "93,845", "+17%", "up", "43,891", "+5%", "up", "390,754", "+2%", "up", "42,815", "+3%", "up", "24.0%", "46.8%", "11.0%"], ["男装", "98.0", "+19%", "up", "20,747", "+30%", "up", "7,543", "+24%", "up", "97,329", "+1%", "up", "18,629", "+4%", "up", "21.3%", "36.4%", "19.1%"], ["女装(童装)", "34.4", "+7%", "up", "14,704", "-13%", "down", "6,866", "-16%", "down", "111,590", "+2%", "up", "10,014", "+5%", "up", "13.2%", "46.7%", "9.0%"], ["箱包鞋靴", "34.2", "+8%", "up", "14,787", "+6%", "up", "6,184", "+16%", "up", "110,291", "-1%", "down", "11,296", "+6%", "up", "13.4%", "41.8%", "10.2%"], ["珠宝", "30.9", "+4%", "up", "14,581", "+22%", "up", "5,508", "-2%", "down", "113,989", "-5%", "down", "8,534", "+14%", "up", "12.8%", "37.8%", "7.5%"], ["运动鞋服", "27.3", "+11%", "up", "13,091", "+32%", "up", "5,632", "+19%", "up", "92,588", "+1%", "up", "9,448", "+7%", "up", "14.1%", "43.0%", "10.2%"], ["跑品客户", "21.0", "+28%", "up", "8,833", "+20%", "up", "4,820", "+17%", "up", "19,842", "+6%", "up", "3,546", "+11%", "up", "44.5%", "54.6%", "17.9%"], ["运动用品", "17.0", "-2%", "down", "9,726", "+29%", "up", "5,281", "+91%", "up", "43,993", "+3%", "up", "4,793", "+10%", "up", "22.1%", "54.3%", "10.9%"], ["配饰", "12.7", "+36%", "up", "4,650", "+31%", "up", "2,206", "+71%", "up", "16,018", "+5%", "up", "2,592", "+2%", "up", "29.0%", "47.4%", "16.2%"], ["文玩", "5.8", "+3%", "up", "5,064", "+7%", "up", "1,952", "+17%", "up", "50,633", "-1%", "down", "3,286", "+2%", "up", "10.0%", "38.5%", "6.5%"]]}, "board": {"dr": [["男装", "杭州乐量文化传媒有限公司", "4.8", "+40%", "up", "1,225", "+175%", "up", "599", "-19%", "down", "204.5%"], ["贴身衣物", "草本初色文俊", "17.4", "+302%", "up", "8,781", "+1010%", "up", "6,627", "+39%", "up", "132.5%"], ["运动用品", "杭州溯界文化创意有限公司", "3.2", "-8%", "down", "1,501", "+116%", "up", "1,556", "+23%", "up", "96.5%"], ["女装", "之禾", "4.3", "+0%", "up", "324", "+49%", "up", "346", "+5%", "up", "93.6%"], ["贴身衣物", "猫人", "1.1", "-33%", "down", "440", "+47%", "up", "547", "+8%", "up", "80.4%"]], "db": [["女装", "赫基集团", "1.1", "+26%", "up", "30", "-41%", "down", "11,074", "-1%", "down", "0.3%"], ["男装", "贴牌李于忠", "3.8", "+93%", "up", "77", "-59%", "down", "1,775", "-1%", "down", "4.3%"], ["贴身衣物", "亲相见", "3.6", "-21%", "down", "296", "-24%", "down", "6,579", "-0%", "down", "4.5%"], ["贴身衣物", "北京润森发贸易有限公司", "2.7", "-17%", "down", "20", "-81%", "down", "412", "+1%", "up", "4.9%"], ["男装", "合肥邦鑫服饰有限公司", "14.8", "+62%", "up", "74", "-46%", "down", "544", "-0%", "down", "13.6%"], ["箱包鞋靴", "湖南奥讯网络科技有限公司", "2.8", "+7%", "up", "214", "-72%", "down", "1,437", "-41%", "down", "14.9%"], ["贴身衣物", "洋奢", "1.6", "-24%", "down", "432", "-63%", "down", "2,782", "-24%", "down", "15.5%"], ["珠宝", "左氏", "2.4", "-5%", "down", "206", "-52%", "down", "1,159", "+9%", "up", "17.8%"], ["配饰", "郑州旋顺商贸有限公司", "1.4", "+17%", "up", "210", "-24%", "down", "1,089", "-9%", "down", "19.3%"], ["贴身衣物", "蕉内", "3.3", "+4%", "up", "20", "-59%", "down", "86", "+28%", "up", "23.3%"]], "fr": [["运动用品", "杭州溯界文化创意有限公司", "3.2", "-8%", "down", "1,277", "+140%", "up", "1,501", "+116%", "up", "85.1%"], ["贴身衣物", "西鸣", "27.6", "-7%", "down", "1,207", "+57%", "up", "1,466", "+32%", "up", "82.3%"], ["珠宝", "台州思策商贸有限公司", "1.1", "-65%", "down", "40", "+208%", "up", "49", "+96%", "up", "81.6%"], ["珠宝", "广东很久文化传播有限公司", "1.4", "+9%", "up", "160", "+122%", "up", "199", "+86%", "up", "80.4%"], ["贴身衣物", "蔓雅夫人", "1.3", "-17%", "down", "375", "+838%", "up", "500", "+288%", "up", "75.0%"]], "fb": [["男装", "罗蒙官方", "1.7", "-8%", "down", "22", "-65%", "down", "556", "-23%", "down", "4.0%"], ["女装", "森衣惠", "1.1", "-35%", "down", "14", "-79%", "down", "216", "-42%", "down", "6.5%"], ["女装", "之禾", "4.3", "+0%", "up", "22", "-48%", "down", "324", "+49%", "up", "6.8%"], ["运动鞋服", "蕉下", "1.1", "+38%", "up", "22", "-74%", "down", "292", "-5%", "down", "7.5%"], ["贴身衣物", "蕉内", "3.3", "+4%", "up", "2", "-94%", "down", "20", "-59%", "down", "10.0%"], ["箱包鞋靴", "瓯海鸿星", "2.0", "-6%", "down", "47", "-53%", "down", "371", "-19%", "down", "12.7%"], ["贴身衣物", "知音草", "1.4", "-34%", "down", "150", "-23%", "down", "830", "+71%", "up", "18.1%"], ["珠宝", "深圳市芭莎铭创技术科技有限公司", "2.6", "-35%", "down", "13", "-65%", "down", "61", "-14%", "down", "21.3%"], ["男装", "广州晴迈信息科技有限公司", "2.1", "-6%", "down", "36", "-60%", "down", "155", "-4%", "down", "23.2%"], ["箱包鞋靴", "mueka", "1.2", "+246%", "up", "335", "-29%", "down", "1,438", "-17%", "down", "23.3%"]], "cr": [["珠宝", "深圳市芭莎铭创技术科技有限公司", "2.6", "-35%", "down", "198", "-8%", "down", "208", "-10%", "down", "95.2%"], ["配饰", "广州树语商贸有限公司", "2.1", "-5%", "down", "243", "+8%", "up", "295", "+13%", "up", "82.4%"], ["贴身衣物", "佛山市红与红文化传媒有限公司", "1.7", "+44%", "up", "41", "0%", "flat", "53", "nan%", "down", "77.4%"], ["女装", "之禾", "4.3", "+0%", "up", "244", "+3%", "up", "346", "+5%", "up", "70.5%"], ["珠宝", "广东很久文化传播有限公司", "1.4", "+9%", "up", "193", "-15%", "down", "280", "-2%", "down", "68.9%"]], "cb": [["贴身衣物", "完美记忆", "1.5", "+55%", "up", "497", "-11%", "down", "26,891", "+2%", "up", "1.8%"], ["女装", "赫基集团", "1.1", "+26%", "up", "299", "-2%", "down", "11,074", "-1%", "down", "2.7%"], ["贴身衣物", "茵暖", "2.3", "+6%", "up", "781", "-3%", "down", "16,709", "+2%", "up", "4.7%"], ["运动鞋服", "SIINSIIN", "3.8", "+34%", "up", "1,502", "+25%", "up", "28,079", "-1%", "down", "5.3%"], ["贴身衣物", "知音草", "1.4", "-34%", "down", "754", "+7%", "up", "13,555", "-0%", "down", "5.6%"], ["运动用品", "扬州奥锐克体育用品有限公司", "1.1", "+17%", "up", "266", "-5%", "down", "3,457", "-0%", "down", "7.7%"], ["贴身衣物", "BONAS/宝娜斯", "2.4", "-10%", "down", "1,337", "-2%", "down", "16,388", "+1%", "up", "8.2%"], ["贴身衣物", "蔓雅夫人", "1.3", "-17%", "down", "408", "+30%", "up", "4,556", "+4%", "up", "9.0%"], ["跑品客户", "保定平头哥箱包制造有限公司", "1.9", "+83%", "up", "134", "+3%", "up", "1,455", "-8%", "down", "9.2%"], ["运动用品", "义乌市暗尘网络科技有限公司", "1.3", "+249%", "up", "73", "+92%", "up", "767", "+65%", "up", "9.5%"]]}, "p3": {"tree": [{"name": "西鸣", "warn": true, "cost": "23.4", "cost_r": "-16%", "cost_c": "down", "expo": "2,355", "expo_r": "+7%", "expo_c": "up", "bid": "70.2", "bid_r": "+5%", "bid_c": "up", "roi": "5.36", "roi_r": "-16%", "roi_c": "down", "children": [{"name": "微信视频号", "cost": "21.0", "cost_r": "-17%", "cost_c": "down", "expo": "1,886", "expo_r": "+17%", "expo_c": "up", "bid": "68.9", "bid_r": "+4%", "bid_c": "up", "roi": "4.95", "roi_r": "-12%", "roi_c": "down"}, {"name": "微信朋友圈", "cost": "2.3", "cost_r": "-4%", "cost_c": "down", "expo": "1,304", "expo_r": "-10%", "expo_c": "down", "bid": "73.1", "bid_r": "+6%", "bid_c": "up", "roi": "10.06", "roi_r": "-8%", "roi_c": "down"}]}, {"name": "猫人夏宇", "warn": true, "cost": "10.7", "cost_r": "-14%", "cost_c": "down", "expo": "2,706", "expo_r": "-8%", "expo_c": "down", "bid": "42.7", "bid_r": "+3%", "bid_c": "up", "roi": "3.53", "roi_r": "-2%", "roi_c": "down", "children": [{"name": "微信视频号", "cost": "9.9", "cost_r": "-8%", "cost_c": "down", "expo": "2,206", "expo_r": "-4%", "expo_c": "down", "bid": "42.3", "bid_r": "+12%", "bid_c": "up", "roi": "3.48", "roi_r": "-1%", "roi_c": "down"}, {"name": "微信朋友圈", "cost": "0.8", "cost_r": "-53%", "cost_c": "down", "expo": "1,624", "expo_r": "-19%", "expo_c": "down", "bid": "44.5", "bid_r": "-5%", "bid_c": "down", "roi": "3.86", "roi_r": "+1%", "roi_c": "up"}]}, {"name": "重庆爆一爆", "warn": true, "cost": "10.3", "cost_r": "-25%", "cost_c": "down", "expo": "1,849", "expo_r": "-14%", "expo_c": "down", "bid": "100.8", "bid_r": "+3%", "bid_c": "up", "roi": "10.27", "roi_r": "+73%", "roi_c": "up", "children": [{"name": "微信视频号", "cost": "10.0", "cost_r": "-25%", "cost_c": "down", "expo": "1,557", "expo_r": "-13%", "expo_c": "down", "bid": "96.7", "bid_r": "+1%", "bid_c": "up", "roi": "6.93", "roi_r": "+18%", "roi_c": "up"}, {"name": "微信朋友圈", "cost": "0.3", "cost_r": "+1%", "cost_c": "up", "expo": "856", "expo_r": "-20%", "expo_c": "down", "bid": "128.1", "bid_r": "-0%", "bid_c": "down", "roi": "52.74", "roi_r": "+14%", "roi_c": "up"}]}, {"name": "之禾", "warn": true, "cost": "3.9", "cost_r": "-1%", "cost_c": "down", "expo": "238", "expo_r": "+8%", "expo_c": "up", "bid": "nan", "bid_r": "0%", "bid_c": "flat", "roi": "9.72", "roi_r": "+0%", "roi_c": "up", "children": [{"name": "微信朋友圈", "cost": "2.6", "cost_r": "-27%", "cost_c": "down", "expo": "184", "expo_r": "-1%", "expo_c": "down", "bid": "nan", "bid_r": "0%", "bid_c": "flat", "roi": "9.72", "roi_r": "+0%", "roi_c": "up"}, {"name": "微信视频号", "cost": "1.3", "cost_r": "+228%", "cost_c": "up", "expo": "134", "expo_r": "+13%", "expo_c": "up", "bid": "nan", "bid_r": "0%", "bid_c": "flat", "roi": "9.72", "roi_r": "-0%", "roi_c": "down"}]}]}}};
 function P(v,c){ return '<span class="pct '+c+'">'+v+'</span>'; }
 function arrow(c){ return c==='up'?'↑':c==='down'?'↓':'→'; }
 
 function renderDate(date) {
-  const d = DATA[date];
-  if (!d) return;
+  const d = DATA[date]; if (!d) return;
 
-  // === P1 ===
-  let sh = '';
+  // P1
+  let sh='';
   d.p1.summary.forEach(s => {
-    const u = s.unit ? '<span class="unit"> '+s.unit+'</span>' : '';
-    sh += '<div class="summary-card"><div class="label">'+s.label+'</div><div class="value">'+s.value+u+'</div><div class="change '+s.cls+'">'+arrow(s.cls)+' '+s.change+'</div></div>';
+    const u=s.unit?'<span class="unit"> '+s.unit+'</span>':'';
+    sh+='<div class="summary-card"><div class="label">'+s.label+'</div><div class="value">'+s.value+u+'</div><div class="change '+s.cls+'">'+arrow(s.cls)+' '+s.change+'</div></div>';
   });
-  document.getElementById('s1-summary').innerHTML = sh;
-
-  let tb = '';
+  document.getElementById('s1-summary').innerHTML=sh;
+  let tb='';
   d.p1.rows.forEach(r => {
-    tb += '<tr><td>'+r[0]+'</td><td class="r">'+r[1]+'</td><td class="r">'+P(r[2],r[3])+'</td><td class="r">'+r[4]+'</td><td class="r">'+P(r[5],r[6])+'</td><td class="r">'+r[7]+'</td><td class="r">'+P(r[8],r[9])+'</td></tr>';
+    tb+='<tr><td>'+r[0]+'</td><td class="r">'+r[1]+'</td><td class="r">'+P(r[2],r[3])+'</td><td class="r">'+r[4]+'</td><td class="r">'+P(r[5],r[6])+'</td><td class="r">'+r[7]+'</td><td class="r">'+P(r[8],r[9])+'</td></tr>';
   });
-  document.getElementById('s1-tbody').innerHTML = tb;
+  document.getElementById('s1-tbody').innerHTML=tb;
 
-  // === P2 ===
-  sh = '';
+  // P2 summary (4 cards, change is big, value is small)
+  sh='';
   d.p2.summary.forEach(s => {
-    sh += '<div class="summary-card"><div class="label">'+s.label+'</div><div class="value">'+s.value+'</div><div class="change '+s.cls+'">'+arrow(s.cls)+' '+s.change+'</div></div>';
+    const sub=s.sublabel?'<div class="sublabel">'+s.sublabel+'</div>':'';
+    sh+='<div class="summary-card"><div class="label">'+s.label+'</div>'+sub+'<div class="value">'+s.value+'</div><div class="change '+s.cls+'">'+arrow(s.cls)+' '+s.change+'</div></div>';
   });
-  document.getElementById('s2-summary').innerHTML = sh;
+  document.getElementById('s2-summary').innerHTML=sh;
 
-  tb = '';
+  // P2 table (19 fields per row)
+  tb='';
   d.p2.rows.forEach(r => {
-    tb += '<tr><td>'+r[0]+'</td><td class="r">'+r[1]+'</td><td class="r">'+P(r[2],r[3])+'</td><td class="r">'+r[4]+'</td><td class="r">'+P(r[5],r[6])+'</td><td class="r">'+r[7]+'</td><td class="r">'+P(r[8],r[9])+'</td><td class="r">'+r[10]+'</td><td class="r">'+P(r[11],r[12])+'</td><td class="r col-yellow">'+(r[13]||'~')+'</td><td class="r col-blue">'+(r[14]||'~')+'</td></tr>';
+    tb+='<tr><td>'+r[0]+'</td>';
+    tb+='<td class="r">'+r[1]+'</td><td class="r">'+P(r[2],r[3])+'</td>';
+    tb+='<td class="r">'+r[4]+'</td><td class="r">'+P(r[5],r[6])+'</td>';
+    tb+='<td class="r">'+r[7]+'</td><td class="r">'+P(r[8],r[9])+'</td>';
+    tb+='<td class="r">'+r[10]+'</td><td class="r">'+P(r[11],r[12])+'</td>';
+    tb+='<td class="r">'+r[13]+'</td><td class="r">'+P(r[14],r[15])+'</td>';
+    tb+='<td class="r col-yellow">'+r[16]+'</td>';
+    tb+='<td class="r col-green">'+r[17]+'</td>';
+    tb+='<td class="r col-blue">'+r[18]+'</td>';
+    tb+='</tr>';
   });
-  document.getElementById('s2-tbody').innerHTML = tb;
+  document.getElementById('s2-tbody').innerHTML=tb;
 
-  // === Board ===
-  function boardHtml(rows, cls) {
-    let h = '';
+  // Boards (3 boards x 2 lists)
+  function bHtml(rows,cls) {
+    let h='';
     rows.forEach(r => {
-      h += '<tr class="'+cls+'"><td><span class="tag">'+r[0]+'</span></td><td>'+r[1]+'</td><td class="r">'+r[2]+'</td><td class="r">'+P(r[3],r[4])+'</td><td class="r">'+r[5]+'</td><td class="r">'+P(r[6],r[7])+'</td><td class="r">'+r[8]+'</td><td class="r">'+P(r[9],r[10])+'</td><td class="r">'+r[11]+'</td></tr>';
+      h+='<tr class="'+cls+'"><td><span class="tag">'+r[0]+'</span></td><td>'+r[1]+'</td><td class="r">'+r[2]+'</td><td class="r">'+P(r[3],r[4])+'</td><td class="r">'+r[5]+'</td><td class="r">'+P(r[6],r[7])+'</td><td class="r">'+r[8]+'</td><td class="r">'+P(r[9],r[10])+'</td><td class="r">'+r[11]+'</td></tr>';
     });
     return h;
   }
-  if (d.board) {
-    document.getElementById('board-sr').innerHTML = boardHtml(d.board.sr, 'rr');
-    document.getElementById('board-sb').innerHTML = boardHtml(d.board.sb, 'bb');
-    document.getElementById('board-qr').innerHTML = boardHtml(d.board.qr, 'rr');
-    document.getElementById('board-qb').innerHTML = boardHtml(d.board.qb, 'bb');
+  if(d.board){
+    document.getElementById('board-dr').innerHTML=bHtml(d.board.dr,'rr');
+    document.getElementById('board-db').innerHTML=bHtml(d.board.db,'bb');
+    document.getElementById('board-fr').innerHTML=bHtml(d.board.fr,'rr');
+    document.getElementById('board-fb').innerHTML=bHtml(d.board.fb,'bb');
+    document.getElementById('board-cr').innerHTML=bHtml(d.board.cr,'rr');
+    document.getElementById('board-cb').innerHTML=bHtml(d.board.cb,'bb');
   }
 
-  // === P3 Tree ===
-  let tree = '';
+  // P3 Tree
+  let tree='';
   d.p3.tree.forEach(c => {
-    const wc = c.warn ? ' tree-warn' : '';
-    const wi = c.warn ? '⚠️ ' : '';
-    const wt = c.warn ? ' warn-text' : '';
-    tree += '<tr class="tree-parent'+wc+'"><td style="padding-left:16px;font-weight:600;">'+wi+c.name+'</td><td class="r">'+c.cost+'</td><td class="r">'+P(c.cost_r,c.cost_c)+'</td><td class="r">'+c.expo+'</td><td class="r"><span class="pct '+c.expo_c+wt+'">'+c.expo_r+'</span></td><td class="r">'+c.bid+'</td><td class="r">'+P(c.bid_r,c.bid_c)+'</td><td class="r">'+c.roi+'</td><td class="r">'+P(c.roi_r,c.roi_c)+'</td></tr>';
+    const wc=c.warn?' tree-warn':'';const wi=c.warn?'⚠️ ':'';const wt=c.warn?' warn-text':'';
+    tree+='<tr class="tree-parent'+wc+'"><td style="padding-left:16px;font-weight:600;">'+wi+c.name+'</td><td class="r">'+c.cost+'</td><td class="r">'+P(c.cost_r,c.cost_c)+'</td><td class="r">'+c.expo+'</td><td class="r"><span class="pct '+c.expo_c+wt+'">'+c.expo_r+'</span></td><td class="r">'+c.bid+'</td><td class="r">'+P(c.bid_r,c.bid_c)+'</td><td class="r">'+c.roi+'</td><td class="r">'+P(c.roi_r,c.roi_c)+'</td></tr>';
     c.children.forEach(s => {
-      tree += '<tr class="tree-child"><td style="padding-left:32px;color:var(--text-2);">'+s.name+'</td><td class="r">'+s.cost+'</td><td class="r">'+P(s.cost_r,s.cost_c)+'</td><td class="r">'+s.expo+'</td><td class="r">'+P(s.expo_r,s.expo_c)+'</td><td class="r">'+s.bid+'</td><td class="r">'+P(s.bid_r,s.bid_c)+'</td><td class="r">'+s.roi+'</td><td class="r">'+P(s.roi_r,s.roi_c)+'</td></tr>';
+      tree+='<tr class="tree-child"><td style="padding-left:32px;color:var(--text-2);">'+s.name+'</td><td class="r">'+s.cost+'</td><td class="r">'+P(s.cost_r,s.cost_c)+'</td><td class="r">'+s.expo+'</td><td class="r">'+P(s.expo_r,s.expo_c)+'</td><td class="r">'+s.bid+'</td><td class="r">'+P(s.bid_r,s.bid_c)+'</td><td class="r">'+s.roi+'</td><td class="r">'+P(s.roi_r,s.roi_c)+'</td></tr>';
     });
   });
-  document.getElementById('s3-tbody').innerHTML = tree;
+  document.getElementById('s3-tbody').innerHTML=tree;
+
+  // === 黑榜预警色块 ===
+  if(d.board){
+    const dbMap={},fbMap={},cbMap={};
+    d.board.db.forEach(r=>{dbMap[r[1]]={ind:r[0],v:r[11]};});
+    d.board.fb.forEach(r=>{fbMap[r[1]]={ind:r[0],v:r[11]};});
+    d.board.cb.forEach(r=>{cbMap[r[1]]={ind:r[0],v:r[11]};});
+    const allNames=new Set([...Object.keys(dbMap),...Object.keys(fbMap),...Object.keys(cbMap)]);
+    const multi=[],onlyD=[],onlyF=[],onlyC=[];
+    allNames.forEach(name=>{
+      const inD=!!dbMap[name],inF=!!fbMap[name],inC=!!cbMap[name];
+      const cnt=(inD?1:0)+(inF?1:0)+(inC?1:0);
+      const ind=(dbMap[name]||fbMap[name]||cbMap[name]).ind;
+      if(cnt>=2) multi.push({name,ind,inD,inF,inC,cnt});
+      else if(inD) onlyD.push({name,ind});
+      else if(inF) onlyF.push({name,ind});
+      else onlyC.push({name,ind});
+    });
+    multi.sort((a,b)=>b.cnt-a.cnt);
+    // Dots helper
+    const dot=(on,color,label)=>on?'<span style="display:inline-flex;align-items:center;gap:2px;margin:0 2px;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+color+';"></span><span style="font-size:8px;color:'+color+';font-weight:500;">'+label+'</span></span>':'';
+    // Purple banner
+    let mh='<div style="font-size:11px;font-weight:700;color:#7C3AED;margin-bottom:8px;">⚠️ 重点关注 · 多榜客户</div>';
+    if(multi.length===0){mh+='<div style="font-size:11px;color:var(--text-3);">今日无多榜交叉客户 ✅</div>';}
+    else{
+      mh+='<div style="display:flex;flex-wrap:wrap;gap:8px;">';
+      multi.forEach(m=>{
+        const dots=dot(m.inD,'#D97706','勤奋')+dot(m.inF,'#16A34A','新鲜')+dot(m.inC,'#2563EB','消耗');
+        mh+='<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.7);border-radius:6px;padding:4px 10px;font-size:11px;"><span style="font-weight:600;">'+m.name+'</span><span class="tag" style="font-size:8px;">'+m.ind+'</span>'+dots+'</div>';
+      });
+      mh+='</div>';
+    }
+    document.getElementById('warn-multi').innerHTML=mh;
+    // Three blocks
+    function singleBlock(items,label,color){
+      let h='<div style="font-size:10px;font-weight:700;color:'+color+';margin-bottom:6px;">'+label+' ('+items.length+')</div>';
+      h+='<div style="display:flex;flex-wrap:wrap;gap:4px;">';
+      items.forEach(it=>{
+        h+='<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;background:rgba(255,255,255,0.6);border-radius:4px;padding:2px 7px;">'+it.name+' <span class="tag" style="font-size:8px;padding:0 4px;">'+it.ind+'</span></span>';
+      });
+      if(items.length===0) h+='<span style="font-size:10px;color:var(--text-3);">无</span>';
+      h+='</div>';
+      return h;
+    }
+    document.getElementById('warn-d').innerHTML=singleBlock(onlyD,'仅勤奋度黑榜','#B45309');
+    document.getElementById('warn-f').innerHTML=singleBlock(onlyF,'仅新鲜度黑榜','#15803D');
+    document.getElementById('warn-c').innerHTML=singleBlock(onlyC,'仅消耗率黑榜','#1D4ED8');
+  }
 }
 
-function switchTab(idx) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
-  document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+function switchTab(idx){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
 }
-
-// Initial render
 renderDate(document.getElementById('dateSelect').value);
 </script>
 </body>
