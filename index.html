@@ -307,8 +307,9 @@ function renderDate(date) {
     }
     document.getElementById('warn-multi').innerHTML=mh;
     // Three blocks
-    function singleBlock(items,label,color){
-      let h='<div style="font-size:10px;font-weight:700;color:'+color+';margin-bottom:6px;">'+label+' ('+items.length+')</div>';
+    function singleBlock(items,label,color,tip){
+      let h='<div style="font-size:10px;font-weight:700;color:'+color+';margin-bottom:2px;">'+label+' ('+items.length+')</div>';
+      h+='<div style="font-size:8.5px;color:var(--text-3);line-height:1.4;margin-bottom:8px;">'+tip+'</div>';
       h+='<div style="display:flex;flex-wrap:wrap;gap:4px;">';
       items.forEach(it=>{
         h+='<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;background:rgba(255,255,255,0.6);border-radius:4px;padding:2px 7px;">'+it.name+' <span class="tag" style="font-size:8px;padding:0 4px;">'+it.ind+'</span></span>';
@@ -317,9 +318,9 @@ function renderDate(date) {
       h+='</div>';
       return h;
     }
-    document.getElementById('warn-d').innerHTML=singleBlock(onlyD,'仅勤奋度黑榜','#B45309');
-    document.getElementById('warn-f').innerHTML=singleBlock(onlyF,'仅新鲜度黑榜','#15803D');
-    document.getElementById('warn-c').innerHTML=singleBlock(onlyC,'仅消耗率黑榜','#1D4ED8');
+    document.getElementById('warn-d').innerHTML=singleBlock(onlyD,'仅勤奋度黑榜','#B45309','创意新建数少，提醒客户进行素材裂变，增加非重复创意的上新数量');
+    document.getElementById('warn-f').innerHTML=singleBlock(onlyF,'仅新鲜度黑榜','#15803D','上新创意中首次出现的全新创意占比低，请提醒客户适当增加新片段混剪');
+    document.getElementById('warn-c').innerHTML=singleBlock(onlyC,'仅消耗率黑榜','#1D4ED8','在线创意中有消耗创意占比低，请提醒客户汰换僵尸创意，针对高潜新创意开启一键起量');
   }
 }
 
