@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>服饰中心专项数据监控看板</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  :root {
+    --blue: #0052D9; --blue-light: #EBF1FF; --blue-subtle: #F5F8FF;
+    --text-1: #1A1A2E; --text-2: #6B7280; --text-3: #9CA3AF;
+    --border: #E5E7EB; --bg: #FAFBFC; --white: #FFF;
+    --red: #E5484D; --red-bg: #FFF5F5; --green: #30A46C; --green-bg: #F2FCF5;
+    --black-bg: #F5F5F8; --radius: 10px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',-apple-system,'PingFang SC','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text-1);line-height:1.5;-webkit-font-smoothing:antialiased;font-size:13px;}
+
+  /* Header */
+  .header{background:rgba(255,255,255,0.95);border-bottom:1px solid var(--border);padding:20px 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);}
+  .header-inner{max-width:1200px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;}
+  .header h1{font-size:18px;font-weight:600;letter-spacing:-0.3px;}
+  .date-select{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-3);}
+  .date-select select{appearance:none;-webkit-appearance:none;padding:5px 28px 5px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text-1);background:var(--white) url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%239CA3AF' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 8px center;cursor:pointer;font-family:inherit;}
+  .date-select select:hover{border-color:var(--blue);}
+
+  /* Tabs */
+  .tabs{max-width:1200px;margin:0 auto;padding:16px 28px 0;display:flex;gap:0;border-bottom:1px solid var(--border);}
+  .tab{padding:10px 20px;font-size:13px;font-weight:500;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;position:relative;bottom:-1px;}
+  .tab:hover{color:var(--text-2);}
+  .tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600;}
+
+  /* Container */
+  .container{max-width:1200px;margin:0 auto;padding:24px 28px 40px;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  /* Summary Cards */
+  .summary-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:20px;}
+  .summary-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
+  .summary-card .label{font-size:10px;color:var(--text-3);font-weight:500;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+  .summary-card .value{font-size:22px;font-weight:700;letter-spacing:-.5px;}
+  .summary-card .value .unit{font-size:12px;color:var(--text-3);font-weight:400;}
+  .summary-card .change{font-size:11px;font-weight:500;margin-top:2px;}
+  .up{color:var(--green);} .down{color:var(--red);} .flat{color:var(--text-3);}
+
+  /* Table */
+  .table-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
+  .table-title{padding:12px 16px 10px;font-size:13px;font-weight:600;border-bottom:1px solid var(--border);}
+  table{width:100%;border-collapse:collapse;font-size:11.5px;}
+  thead th{padding:6px 10px;text-align:left;font-weight:500;font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.3px;background:var(--bg);border-bottom:1px solid var(--border);}
+  thead th:first-child{padding-left:16px;}
+  tbody td{padding:6px 10px;border-bottom:1px solid #F3F4F6;font-variant-numeric:tabular-nums;}
+  tbody td:first-child{padding-left:16px;font-weight:500;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--blue-subtle);}
+  .r{text-align:right;}
+  .pct{font-weight:500;font-size:11px;}
+
+  /* Board */
+  .board-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:900px){.board-grid{grid-template-columns:1fr;}}
+  .board-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+  .board-header{padding:12px 16px;font-size:13px;font-weight:600;border-bottom:1px solid var(--border);}
+  .board-rule{padding:8px 16px;font-size:10px;color:var(--text-2);background:#FAFBFC;border-bottom:1px solid var(--border);line-height:1.6;}
+  .board-label{padding:6px 16px;font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.3px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
+  .dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
+  .dot-r{background:var(--red);} .dot-b{background:#374151;}
+  .bt{width:100%;border-collapse:collapse;font-size:11px;}
+  .bt th{padding:5px 8px;text-align:left;font-weight:500;font-size:9.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.2px;background:var(--bg);border-bottom:1px solid var(--border);}
+  .bt th:first-child{padding-left:16px;}
+  .bt td{padding:5px 8px;border-bottom:1px solid #F3F4F6;font-variant-numeric:tabular-nums;}
+  .bt td:first-child{padding-left:16px;}
+  .bt tr:last-child td{border-bottom:none;}
+  .rr{background:var(--red-bg);} .bb{background:var(--black-bg);}
+  .tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9.5px;font-weight:500;background:var(--blue-light);color:var(--blue);}
+
+  .section-desc{font-size:12px;color:var(--text-3);margin-bottom:16px;}
+  .footer{text-align:center;padding:28px;color:var(--text-3);font-size:11px;}
+
+  /* Tree table */
+  .tree-parent td{background:#F8F9FB;border-top:1px solid var(--border);}
+  .tree-child td{background:var(--white);}
+  .tree-warn td{background:#FFF8F8 !important;border-left:3px solid var(--red);}
+  .tree-warn td:first-child{color:var(--red);}
+  .warn-text{color:var(--red) !important;font-weight:600;}
+
+  /* Table scroll wrapper */
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .table-scroll table{min-width:600px;}
+  .table-scroll .bt{min-width:700px;}
+
+  /* ========== Mobile ========== */
+  @media(max-width:768px){
+    .header{padding:14px 0;}
+    .header-inner{padding:0 16px;flex-direction:column;align-items:flex-start;gap:8px;}
+    .header h1{font-size:15px;}
+    .date-select{font-size:11px;}
+    .date-select select{font-size:11px;padding:4px 24px 4px 8px;}
+
+    .tabs{padding:10px 16px 0;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+    .tab{padding:8px 14px;font-size:12px;white-space:nowrap;flex-shrink:0;}
+
+    .container{padding:16px 12px 32px;}
+
+    .summary-row{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+    .summary-card{padding:10px 12px;}
+    .summary-card .label{font-size:9px;letter-spacing:.3px;}
+    .summary-card .value{font-size:18px;}
+    .summary-card .change{font-size:10px;}
+
+    .table-title{padding:10px 12px 8px;font-size:12px;}
+
+    .board-grid{grid-template-columns:1fr;gap:12px;}
+    .board-header{padding:10px 12px;font-size:12px;}
+    .board-rule{padding:6px 12px;font-size:9px;line-height:1.5;}
+    .board-label{padding:5px 12px;font-size:9px;}
+
+    .section-desc{font-size:11px;margin-bottom:12px;}
+    .footer{padding:20px;font-size:10px;}
+  }
+
+  @media(max-width:420px){
+    .summary-row{grid-template-columns:1fr;}
+    .summary-card .value{font-size:20px;}
+    .header h1{font-size:14px;}
+    .tab{padding:7px 10px;font-size:11px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>服饰中心 · 专项数据监控看板</h1>
+    <div class="date-select">
+      <span>监控日期</span>
+      <select id="dateSelect">
+        <option value="2026-04-16" selected>2026-04-16</option>
+      </select>
+      <span style="color:var(--text-3);font-size:11px;margin-left:4px;">环比前一日</span>
+    </div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(0)">专项 01 · 朋友圈九图提收</div>
+  <div class="tab" onclick="switchTab(1)">专项 02 · 闭环创意供给</div>
+  <div class="tab" onclick="switchTab(2)">专项 03 · 流量侧扶持监控</div>
+</div>
+
+<div class="container">
+
+<!-- ========== Panel 1: 朋友圈九图 ========== -->
+<div class="panel active" id="panel0">
+  <p class="section-desc">监测朋友圈九图广告的消耗、有消耗客户数、有消耗的展开创意 TID 数</p>
+  <div class="summary-row">
+    <div class="summary-card"><div class="label">服饰大盘消耗</div><div class="value">72.7<span class="unit"> 万</span></div><div class="change up">↑ +5%</div></div>
+    <div class="summary-card"><div class="label">有消耗客户数</div><div class="value">1,052</div><div class="change down">↓ -3%</div></div>
+    <div class="summary-card"><div class="label">有消耗展开创意 TID 数</div><div class="value">13,152</div><div class="change flat">→ 0%</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-title">各赛道明细（按消耗降序）</div>
+    <div class="table-scroll"><table>
+      <thead><tr><th>行业</th><th class="r">消耗(万)</th><th class="r">环比</th><th class="r">客户数</th><th class="r">环比</th><th class="r">TID数</th><th class="r">环比</th></tr></thead>
+      <tbody>
+        <tr><td>运动鞋服</td><td class="r">25.6</td><td class="r"><span class="pct up">+9%</span></td><td class="r">37</td><td class="r"><span class="pct up">+3%</span></td><td class="r">2,990</td><td class="r"><span class="pct up">+2%</span></td></tr>
+        <tr><td>奢品服饰</td><td class="r">14.4</td><td class="r"><span class="pct up">+7%</span></td><td class="r">21</td><td class="r"><span class="pct flat">0%</span></td><td class="r">420</td><td class="r"><span class="pct flat">0%</span></td></tr>
+        <tr><td>大众潮流</td><td class="r">9.3</td><td class="r"><span class="pct up">+14%</span></td><td class="r">10</td><td class="r"><span class="pct flat">0%</span></td><td class="r">458</td><td class="r"><span class="pct up">+4%</span></td></tr>
+        <tr><td>女装</td><td class="r">6.9</td><td class="r"><span class="pct down">-4%</span></td><td class="r">49</td><td class="r"><span class="pct flat">0%</span></td><td class="r">1,394</td><td class="r"><span class="pct down">-3%</span></td></tr>
+        <tr><td>珠宝</td><td class="r">4.8</td><td class="r"><span class="pct up">+5%</span></td><td class="r">84</td><td class="r"><span class="pct down">-3%</span></td><td class="r">866</td><td class="r"><span class="pct up">+3%</span></td></tr>
+        <tr><td>文玩</td><td class="r">2.1</td><td class="r"><span class="pct up">+136%</span></td><td class="r">41</td><td class="r"><span class="pct down">-5%</span></td><td class="r">447</td><td class="r"><span class="pct up">+5%</span></td></tr>
+        <tr><td>综合</td><td class="r">2.1</td><td class="r"><span class="pct down">-8%</span></td><td class="r">5</td><td class="r"><span class="pct flat">0%</span></td><td class="r">182</td><td class="r"><span class="pct up">+26%</span></td></tr>
+        <tr><td>其他</td><td class="r">2.1</td><td class="r"><span class="pct down">-19%</span></td><td class="r">541</td><td class="r"><span class="pct down">-6%</span></td><td class="r">2,873</td><td class="r"><span class="pct down">-6%</span></td></tr>
+        <tr><td>箱包鞋靴</td><td class="r">1.4</td><td class="r"><span class="pct down">-3%</span></td><td class="r">78</td><td class="r"><span class="pct down">-4%</span></td><td class="r">1,072</td><td class="r"><span class="pct down">-4%</span></td></tr>
+        <tr><td>贴身衣物</td><td class="r">1.4</td><td class="r"><span class="pct down">-19%</span></td><td class="r">61</td><td class="r"><span class="pct up">+7%</span></td><td class="r">910</td><td class="r"><span class="pct up">+9%</span></td></tr>
+        <tr><td>男装</td><td class="r">1.3</td><td class="r"><span class="pct up">+5%</span></td><td class="r">60</td><td class="r"><span class="pct up">+2%</span></td><td class="r">946</td><td class="r"><span class="pct down">-2%</span></td></tr>
+        <tr><td>潮奢珠宝配饰</td><td class="r">0.9</td><td class="r"><span class="pct down">-47%</span></td><td class="r">7</td><td class="r"><span class="pct down">-13%</span></td><td class="r">84</td><td class="r"><span class="pct up">+5%</span></td></tr>
+        <tr><td>跑品客户</td><td class="r">0.3</td><td class="r"><span class="pct up">+22%</span></td><td class="r">22</td><td class="r"><span class="pct down">-4%</span></td><td class="r">232</td><td class="r"><span class="pct up">+13%</span></td></tr>
+        <tr><td>配饰</td><td class="r">0.1</td><td class="r"><span class="pct down">-58%</span></td><td class="r">18</td><td class="r"><span class="pct flat">0%</span></td><td class="r">65</td><td class="r"><span class="pct down">-6%</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ========== Panel 2: 闭环创意供给 ========== -->
+<div class="panel" id="panel1">
+  <p class="section-desc">监测闭环直播 + 小店链路的新建创意唯一性、在线创意唯一性、有消耗创意唯一性</p>
+
+  <div class="summary-row">
+    <div class="summary-card"><div class="label">新建创意唯一性ID数</div><div class="value">279,033</div><div class="change down">↓ -28.6%</div></div>
+    <div class="summary-card"><div class="label">在线创意唯一性ID数</div><div class="value">2,175,856</div><div class="change up">↑ +0.6%</div></div>
+    <div class="summary-card"><div class="label">消耗创意唯一性ID数</div><div class="value">150,395</div><div class="change up">↑ +2.7%</div></div>
+  </div>
+
+  <!-- 赛道明细 -->
+  <div class="table-card">
+    <div class="table-title">各赛道明细（按消耗降序）</div>
+    <div class="table-scroll"><table>
+      <thead><tr><th>行业</th><th class="r">消耗(万)</th><th class="r">环比</th><th class="r">新建创意数</th><th class="r">环比</th><th class="r">在线创意数</th><th class="r">环比</th><th class="r">消耗创意数</th><th class="r">环比</th></tr></thead>
+      <tbody>
+        <tr><td>贴身衣物</td><td class="r">202.1</td><td class="r"><span class="pct up">+15%</span></td><td class="r">80,360</td><td class="r"><span class="pct down">-17%</span></td><td class="r">383,296</td><td class="r"><span class="pct down">-1%</span></td><td class="r">41,555</td><td class="r"><span class="pct down">-2%</span></td></tr>
+        <tr><td>其他</td><td class="r">151.6</td><td class="r"><span class="pct up">+4%</span></td><td class="r">106,268</td><td class="r"><span class="pct down">-41%</span></td><td class="r">1,127,215</td><td class="r"><span class="pct up">+1%</span></td><td class="r">40,799</td><td class="r"><span class="pct up">+10%</span></td></tr>
+        <tr><td>男装</td><td class="r">82.1</td><td class="r"><span class="pct flat">0%</span></td><td class="r">15,961</td><td class="r"><span class="pct down">-17%</span></td><td class="r">96,710</td><td class="r"><span class="pct flat">0%</span></td><td class="r">17,829</td><td class="r"><span class="pct up">+2%</span></td></tr>
+        <tr><td>女装</td><td class="r">32.2</td><td class="r"><span class="pct down">-2%</span></td><td class="r">16,893</td><td class="r"><span class="pct down">-10%</span></td><td class="r">109,158</td><td class="r"><span class="pct up">+4%</span></td><td class="r">9,543</td><td class="r"><span class="pct down">-2%</span></td></tr>
+        <tr><td>箱包鞋靴</td><td class="r">31.7</td><td class="r"><span class="pct down">-6%</span></td><td class="r">14,000</td><td class="r"><span class="pct down">-11%</span></td><td class="r">111,451</td><td class="r"><span class="pct flat">0%</span></td><td class="r">10,640</td><td class="r"><span class="pct down">-6%</span></td></tr>
+        <tr><td>珠宝</td><td class="r">29.7</td><td class="r"><span class="pct down">-7%</span></td><td class="r">11,919</td><td class="r"><span class="pct down">-38%</span></td><td class="r">120,001</td><td class="r"><span class="pct flat">0%</span></td><td class="r">7,491</td><td class="r"><span class="pct up">+10%</span></td></tr>
+        <tr><td>运动鞋服</td><td class="r">24.6</td><td class="r"><span class="pct up">+3%</span></td><td class="r">9,955</td><td class="r"><span class="pct down">-11%</span></td><td class="r">91,769</td><td class="r"><span class="pct up">+3%</span></td><td class="r">8,812</td><td class="r"><span class="pct up">+9%</span></td></tr>
+        <tr><td>运动用品</td><td class="r">17.3</td><td class="r"><span class="pct up">+22%</span></td><td class="r">7,539</td><td class="r"><span class="pct down">-24%</span></td><td class="r">42,600</td><td class="r"><span class="pct down">-2%</span></td><td class="r">4,363</td><td class="r"><span class="pct up">+1%</span></td></tr>
+        <tr><td>跑品客户</td><td class="r">16.5</td><td class="r"><span class="pct up">+8%</span></td><td class="r">7,348</td><td class="r"><span class="pct down">-9%</span></td><td class="r">18,690</td><td class="r"><span class="pct up">+8%</span></td><td class="r">3,184</td><td class="r"><span class="pct up">+8%</span></td></tr>
+        <tr><td>配饰</td><td class="r">9.4</td><td class="r"><span class="pct up">+24%</span></td><td class="r">3,549</td><td class="r"><span class="pct down">-26%</span></td><td class="r">15,310</td><td class="r"><span class="pct flat">0%</span></td><td class="r">2,542</td><td class="r"><span class="pct up">+4%</span></td></tr>
+        <tr><td>文玩</td><td class="r">5.6</td><td class="r"><span class="pct up">+7%</span></td><td class="r">4,732</td><td class="r"><span class="pct down">-34%</span></td><td class="r">51,208</td><td class="r"><span class="pct down">-3%</span></td><td class="r">3,222</td><td class="r"><span class="pct down">-6%</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- 红黑榜 -->
+  <div class="board-grid">
+    <!-- 创意新建数量 -->
+    <div class="board-card">
+      <div class="board-header">创意新建数量 · 红黑榜</div>
+      <div class="board-rule">
+        <b>红榜：</b>新建创意占比（=新建创意唯一性ID数÷在线创意唯一性ID数）高于客户所在二级行业均值，且新建创意数环比增长超过+20%，按新建创意占比从高到低取 Top5（仅消耗>1w的客户可上榜）<br>
+        <b>黑榜：</b>新建创意占比低于客户所在二级行业均值，且新建创意数环比下降超过-20%，按新建创意占比从低到高取 Top10（仅消耗>1w的客户可上榜）
+      </div>
+
+      <div class="board-label"><span class="dot dot-r"></span>红榜 TOP 5</div>
+      <div class="table-scroll"><table class="bt">
+        <thead><tr><th>行业</th><th>客户</th><th class="r">消耗(万)</th><th class="r">消耗环比</th><th class="r">新建创意数</th><th class="r">新建环比</th><th class="r">在线创意数</th><th class="r">在线环比</th><th class="r">新建占比</th></tr></thead>
+        <tbody>
+          <tr class="rr"><td><span class="tag">贴身衣物</span></td><td>蕉内</td><td class="r">3.2</td><td class="r"><span class="pct up">+310%</span></td><td class="r">49</td><td class="r"><span class="pct up">+4800%</span></td><td class="r">67</td><td class="r"><span class="pct up">+16%</span></td><td class="r">73.1%</td></tr>
+          <tr class="rr"><td><span class="tag">贴身衣物</span></td><td>无痕内衣</td><td class="r">1.1</td><td class="r"><span class="pct down">-34%</span></td><td class="r">2,141</td><td class="r"><span class="pct up">+52%</span></td><td class="r">2,938</td><td class="r"><span class="pct up">+22%</span></td><td class="r">72.9%</td></tr>
+          <tr class="rr"><td><span class="tag">贴身衣物</span></td><td>欧贝儿</td><td class="r">2.2</td><td class="r"><span class="pct up">+427%</span></td><td class="r">312</td><td class="r"><span class="pct up">+46%</span></td><td class="r">437</td><td class="r"><span class="pct up">+36%</span></td><td class="r">71.4%</td></tr>
+          <tr class="rr"><td><span class="tag">箱包鞋靴</span></td><td>高攀商贸</td><td class="r">1.6</td><td class="r"><span class="pct up">+83%</span></td><td class="r">1,611</td><td class="r"><span class="pct up">+110%</span></td><td class="r">2,332</td><td class="r"><span class="pct up">+62%</span></td><td class="r">69.1%</td></tr>
+          <tr class="rr"><td><span class="tag">箱包鞋靴</span></td><td>永幸皮具</td><td class="r">1.5</td><td class="r"><span class="pct up">+171%</span></td><td class="r">119</td><td class="r"><span class="pct up">+95%</span></td><td class="r">178</td><td class="r"><span class="pct up">+9%</span></td><td class="r">66.9%</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="board-label"><span class="dot dot-b"></span>黑榜 TOP 10</div>
+      <div class="table-scroll"><table class="bt">
+        <thead><tr><th>行业</th><th>客户</th><th class="r">消耗(万)</th><th class="r">消耗环比</th><th class="r">新建创意数</th><th class="r">新建环比</th><th class="r">在线创意数</th><th class="r">在线环比</th><th class="r">新建占比</th></tr></thead>
+        <tbody>
+          <tr class="bb"><td><span class="tag">男装</span></td><td>嘉兴奥仕捷</td><td class="r">1.2</td><td class="r"><span class="pct up">+10%</span></td><td class="r">0</td><td class="r"><span class="pct down">-100%</span></td><td class="r">72</td><td class="r"><span class="pct flat">0%</span></td><td class="r">0.0%</td></tr>
+          <tr class="bb"><td><span class="tag">运动用品</span></td><td>淄博佐佑</td><td class="r">1.3</td><td class="r"><span class="pct down">-8%</span></td><td class="r">0</td><td class="r"><span class="pct down">-100%</span></td><td class="r">975</td><td class="r"><span class="pct flat">0%</span></td><td class="r">0.0%</td></tr>
+          <tr class="bb"><td><span class="tag">女装</span></td><td>诗娟电商</td><td class="r">1.4</td><td class="r"><span class="pct down">-30%</span></td><td class="r">2</td><td class="r"><span class="pct down">-100%</span></td><td class="r">2,126</td><td class="r"><span class="pct down">-2%</span></td><td class="r">0.1%</td></tr>
+          <tr class="bb"><td><span class="tag">女装</span></td><td>迁克商贸</td><td class="r">1.2</td><td class="r"><span class="pct up">+35%</span></td><td class="r">6</td><td class="r"><span class="pct down">-65%</span></td><td class="r">2,113</td><td class="r"><span class="pct down">-1%</span></td><td class="r">0.3%</td></tr>
+          <tr class="bb"><td><span class="tag">贴身衣物</span></td><td>索盾优选</td><td class="r">1.5</td><td class="r"><span class="pct up">+102%</span></td><td class="r">6</td><td class="r"><span class="pct down">-62%</span></td><td class="r">871</td><td class="r"><span class="pct down">-2%</span></td><td class="r">0.7%</td></tr>
+          <tr class="bb"><td><span class="tag">贴身衣物</span></td><td>润微</td><td class="r">1.2</td><td class="r"><span class="pct down">-6%</span></td><td class="r">23</td><td class="r"><span class="pct down">-92%</span></td><td class="r">2,147</td><td class="r"><span class="pct down">-9%</span></td><td class="r">1.1%</td></tr>
+          <tr class="bb"><td><span class="tag">贴身衣物</span></td><td>幸棉</td><td class="r">1.3</td><td class="r"><span class="pct up">+212%</span></td><td class="r">31</td><td class="r"><span class="pct down">-38%</span></td><td class="r">2,414</td><td class="r"><span class="pct flat">0%</span></td><td class="r">1.3%</td></tr>
+          <tr class="bb"><td><span class="tag">箱包鞋靴</span></td><td>齐同网络</td><td class="r">1.1</td><td class="r"><span class="pct up">+53%</span></td><td class="r">9</td><td class="r"><span class="pct down">-96%</span></td><td class="r">596</td><td class="r"><span class="pct down">-19%</span></td><td class="r">1.5%</td></tr>
+          <tr class="bb"><td><span class="tag">贴身衣物</span></td><td>杰奎琳内衣</td><td class="r">1.0</td><td class="r"><span class="pct up">+127%</span></td><td class="r">28</td><td class="r"><span class="pct down">-87%</span></td><td class="r">918</td><td class="r"><span class="pct up">+5%</span></td><td class="r">3.1%</td></tr>
+          <tr class="bb"><td><span class="tag">贴身衣物</span></td><td>知音草</td><td class="r">2.2</td><td class="r"><span class="pct up">+21%</span></td><td class="r">484</td><td class="r"><span class="pct down">-39%</span></td><td class="r">13,595</td><td class="r"><span class="pct down">-1%</span></td><td class="r">3.6%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- 创意质量 -->
+    <div class="board-card">
+      <div class="board-header">创意质量 · 红黑榜</div>
+      <div class="board-rule">
+        <b>红榜：</b>有消耗的创意占比（=有消耗的创意唯一性ID数÷在线创意唯一性ID数）高于客户所在二级行业均值，按有消耗创意占比从高到低取 Top5（仅消耗>1w的客户可上榜）<br>
+        <b>黑榜：</b>有消耗的创意占比低于客户所在二级行业均值，按有消耗创意占比从低到高取 Top10（仅消耗>1w的客户可上榜）
+      </div>
+
+      <div class="board-label"><span class="dot dot-r"></span>红榜 TOP 5</div>
+      <div class="table-scroll"><table class="bt">
+        <thead><tr><th>行业</th><th>客户</th><th class="r">消耗(万)</th><th class="r">消耗环比</th><th class="r">消耗创意数</th><th class="r">环比</th><th class="r">在线创意数</th><th class="r">环比</th><th class="r">消耗创意占比</th></tr></thead>
+        <tbody>
+          <tr class="rr"><td><span class="tag">珠宝</span></td><td>巴宝莎眼镜</td><td class="r">2.6</td><td class="r"><span class="pct down">-23%</span></td><td class="r">42</td><td class="r"><span class="pct up">+31%</span></td><td class="r">43</td><td class="r"><span class="pct up">+30%</span></td><td class="r">97.7%</td></tr>
+          <tr class="rr"><td><span class="tag">珠宝</span></td><td>芭莎铭创</td><td class="r">3.9</td><td class="r"><span class="pct up">+15%</span></td><td class="r">215</td><td class="r"><span class="pct up">+11%</span></td><td class="r">232</td><td class="r"><span class="pct up">+8%</span></td><td class="r">92.7%</td></tr>
+          <tr class="rr"><td><span class="tag">配饰</span></td><td>树语商贸</td><td class="r">2.2</td><td class="r"><span class="pct up">+15%</span></td><td class="r">225</td><td class="r"><span class="pct up">+6%</span></td><td class="r">260</td><td class="r"><span class="pct up">+12%</span></td><td class="r">86.5%</td></tr>
+          <tr class="rr"><td><span class="tag">男装</span></td><td>嘉兴奥仕捷</td><td class="r">1.2</td><td class="r"><span class="pct up">+10%</span></td><td class="r">60</td><td class="r"><span class="pct flat">0%</span></td><td class="r">72</td><td class="r"><span class="pct flat">0%</span></td><td class="r">83.3%</td></tr>
+          <tr class="rr"><td><span class="tag">珠宝</span></td><td>广东很久</td><td class="r">1.3</td><td class="r"><span class="pct down">-45%</span></td><td class="r">228</td><td class="r"><span class="pct up">+13%</span></td><td class="r">287</td><td class="r"><span class="pct up">+5%</span></td><td class="r">79.4%</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="board-label"><span class="dot dot-b"></span>黑榜 TOP 10</div>
+      <div class="table-scroll"><table class="bt">
+        <thead><tr><th>行业</th><th>客户</th><th class="r">消耗(万)</th><th class="r">消耗环比</th><th class="r">消耗创意数</th><th class="r">环比</th><th class="r">在线创意数</th><th class="r">环比</th><th class="r">消耗创意占比</th></tr></thead>
+        <tbody>
+          <tr class="bb"><td><span class="tag">贴身衣物</span></td><td>曲线主义</td><td class="r">1.1</td><td class="r"><span class="pct up">+27%</span></td><td class="r">478</td><td class="r"><span class="pct up">+21%</span></td><td class="r">15,760</td><td class="r"><span class="pct up">+1%</span></td><td class="r">3.0%</td></tr>
+          <tr class="bb"><td><span class="tag">运动鞋服</span></td><td>SIINSIIN</td><td class="r">2.9</td><td class="r"><span class="pct up">+143%</span></td><td class="r">1,202</td><td class="r"><span class="pct up">+45%</span></td><td class="r">28,451</td><td class="r"><span class="pct up">+4%</span></td><td class="r">4.2%</td></tr>
+          <tr class="bb"><td><span class="tag">贴身衣物</span></td><td>茵暖</td><td class="r">2.2</td><td class="r"><span class="pct down">-10%</span></td><td class="r">880</td><td class="r"><span class="pct up">+15%</span></td><td class="r">16,951</td><td class="r"><span class="pct up">+2%</span></td><td class="r">5.2%</td></tr>
+          <tr class="bb"><td><span class="tag">贴身衣物</span></td><td>知音草</td><td class="r">2.2</td><td class="r"><span class="pct up">+21%</span></td><td class="r">707</td><td class="r"><span class="pct down">-4%</span></td><td class="r">13,595</td><td class="r"><span class="pct down">-1%</span></td><td class="r">5.2%</td></tr>
+          <tr class="bb"><td><span class="tag">贴身衣物</span></td><td>蔓雅夫人</td><td class="r">1.6</td><td class="r"><span class="pct up">+34%</span></td><td class="r">315</td><td class="r"><span class="pct down">-3%</span></td><td class="r">4,362</td><td class="r"><span class="pct up">+1%</span></td><td class="r">7.2%</td></tr>
+          <tr class="bb"><td><span class="tag">跑品客户</span></td><td>平头哥箱包</td><td class="r">1.0</td><td class="r"><span class="pct down">-50%</span></td><td class="r">130</td><td class="r"><span class="pct up">+14%</span></td><td class="r">1,589</td><td class="r"><span class="pct up">+10%</span></td><td class="r">8.2%</td></tr>
+          <tr class="bb"><td><span class="tag">贴身衣物</span></td><td>BONAS/宝娜斯</td><td class="r">2.6</td><td class="r"><span class="pct down">-6%</span></td><td class="r">1,359</td><td class="r"><span class="pct down">-2%</span></td><td class="r">16,196</td><td class="r"><span class="pct up">+6%</span></td><td class="r">8.4%</td></tr>
+          <tr class="bb"><td><span class="tag">女装</span></td><td>茉寻</td><td class="r">1.5</td><td class="r"><span class="pct down">-8%</span></td><td class="r">557</td><td class="r"><span class="pct down">-14%</span></td><td class="r">6,432</td><td class="r"><span class="pct up">+1%</span></td><td class="r">8.7%</td></tr>
+          <tr class="bb"><td><span class="tag">贴身衣物</span></td><td>杰奎琳内衣</td><td class="r">1.0</td><td class="r"><span class="pct up">+127%</span></td><td class="r">86</td><td class="r"><span class="pct up">+41%</span></td><td class="r">918</td><td class="r"><span class="pct up">+5%</span></td><td class="r">9.4%</td></tr>
+          <tr class="bb"><td><span class="tag">男装</span></td><td>贴牌李于忠</td><td class="r">2.0</td><td class="r"><span class="pct up">+1006%</span></td><td class="r">170</td><td class="r"><span class="pct up">+139%</span></td><td class="r">1,790</td><td class="r"><span class="pct down">-4%</span></td><td class="r">9.5%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Panel 3: 流量侧扶持监控 ========== -->
+<div class="panel" id="panel2">
+  <p class="section-desc">监测流量侧重点扶持客户的消耗、曝光创意唯一性ID数、目标出价、ROI出价</p>
+
+  <!-- 监控通知 -->
+  <div style="background:linear-gradient(135deg,#EBF1FF 0%,#F5F8FF 100%);border:1px solid #D4E0F7;border-radius:var(--radius);padding:14px 18px;margin-bottom:18px;font-size:12px;line-height:1.7;color:var(--text-1);">
+    <div style="font-weight:600;font-size:13px;margin-bottom:6px;color:var(--blue);">📋 扶持巡查规则</div>
+    <div><b>扶持周期：</b>4月18日（周六）— 4月28日</div>
+    <div><b>考核要求：</b>唯一性素材 ID 增长 ≥ 10% 且不降出价</div>
+    <div><b>清退机制：</b>不满足条件的客户将被清退扶持名单</div>
+    <div style="margin-top:6px;color:var(--text-2);font-size:11px;">⚠️ 请各位直客/运营同学 push 头客的基建投入。下方表格中，曝光创意唯一性ID数环比增长低于 10% 的客户已标红预警。</div>
+  </div>
+
+  <!-- 树状表 -->
+  <div class="table-card">
+    <div class="table-title">客户 × 版位消耗明细（树状展开，按消耗降序）</div>
+    <div class="table-scroll"><table id="treeTable">
+      <thead><tr>
+        <th style="padding-left:16px;">客户 / 版位</th>
+        <th class="r">消耗(万)</th>
+        <th class="r">环比</th>
+        <th class="r">曝光创意唯一性ID数</th>
+        <th class="r">环比</th>
+        <th class="r">目标出价(元)</th>
+        <th class="r">环比</th>
+        <th class="r">ROI出价</th>
+        <th class="r">环比</th>
+      </tr></thead>
+      <tbody>
+        <!-- 西鸣 整体: 曝光环比+2%, < 10% → 预警 -->
+        <tr class="tree-parent tree-warn">
+          <td style="padding-left:16px;font-weight:600;">⚠️ 西鸣</td>
+          <td class="r">27.8</td><td class="r"><span class="pct up">+19%</span></td>
+          <td class="r">2,192</td><td class="r"><span class="pct up warn-text">+2%</span></td>
+          <td class="r">66.8</td><td class="r"><span class="pct up">+6%</span></td>
+          <td class="r">6.41</td><td class="r"><span class="pct flat">0%</span></td>
+        </tr>
+        <tr class="tree-child">
+          <td style="padding-left:32px;color:var(--text-2);">微信视频号</td>
+          <td class="r">25.4</td><td class="r"><span class="pct up">+18%</span></td>
+          <td class="r">1,606</td><td class="r"><span class="pct up">+1%</span></td>
+          <td class="r">66.1</td><td class="r"><span class="pct down">-1%</span></td>
+          <td class="r">5.65</td><td class="r"><span class="pct down">-7%</span></td>
+        </tr>
+        <tr class="tree-child">
+          <td style="padding-left:32px;color:var(--text-2);">微信朋友圈</td>
+          <td class="r">2.4</td><td class="r"><span class="pct up">+35%</span></td>
+          <td class="r">1,456</td><td class="r"><span class="pct up">+5%</span></td>
+          <td class="r">68.8</td><td class="r"><span class="pct up">+25%</span></td>
+          <td class="r">10.98</td><td class="r"><span class="pct up">+46%</span></td>
+        </tr>
+
+        <!-- 重庆爆一爆 整体: 曝光环比-15%, < 10% → 预警 -->
+        <tr class="tree-parent tree-warn">
+          <td style="padding-left:16px;font-weight:600;">⚠️ 重庆爆一爆</td>
+          <td class="r">13.7</td><td class="r"><span class="pct up">+28%</span></td>
+          <td class="r">2,149</td><td class="r"><span class="pct down warn-text">-15%</span></td>
+          <td class="r">98.0</td><td class="r"><span class="pct up">+7%</span></td>
+          <td class="r">5.92</td><td class="r"><span class="pct down">-26%</span></td>
+        </tr>
+        <tr class="tree-child">
+          <td style="padding-left:32px;color:var(--text-2);">微信视频号</td>
+          <td class="r">13.4</td><td class="r"><span class="pct up">+27%</span></td>
+          <td class="r">1,782</td><td class="r"><span class="pct down">-13%</span></td>
+          <td class="r">95.9</td><td class="r"><span class="pct up">+4%</span></td>
+          <td class="r">5.88</td><td class="r"><span class="pct down">-26%</span></td>
+        </tr>
+        <tr class="tree-child">
+          <td style="padding-left:32px;color:var(--text-2);">微信朋友圈</td>
+          <td class="r">0.3</td><td class="r"><span class="pct up">+133%</span></td>
+          <td class="r">1,071</td><td class="r"><span class="pct down">-17%</span></td>
+          <td class="r">128.3</td><td class="r"><span class="pct up">+34%</span></td>
+          <td class="r">46.42</td><td class="r"><span class="pct up">+461%</span></td>
+        </tr>
+
+        <!-- 猫人夏宇 整体: 曝光环比+3%, < 10% → 预警 -->
+        <tr class="tree-parent tree-warn">
+          <td style="padding-left:16px;font-weight:600;">⚠️ 猫人夏宇</td>
+          <td class="r">12.5</td><td class="r"><span class="pct up">+13%</span></td>
+          <td class="r">2,945</td><td class="r"><span class="pct up warn-text">+3%</span></td>
+          <td class="r">41.5</td><td class="r"><span class="pct down">-2%</span></td>
+          <td class="r">3.59</td><td class="r"><span class="pct down">-3%</span></td>
+        </tr>
+        <tr class="tree-child">
+          <td style="padding-left:32px;color:var(--text-2);">微信视频号</td>
+          <td class="r">10.7</td><td class="r"><span class="pct up">+4%</span></td>
+          <td class="r">2,291</td><td class="r"><span class="pct flat">0%</span></td>
+          <td class="r">37.8</td><td class="r"><span class="pct down">-6%</span></td>
+          <td class="r">3.52</td><td class="r"><span class="pct down">-1%</span></td>
+        </tr>
+        <tr class="tree-child">
+          <td style="padding-left:32px;color:var(--text-2);">微信朋友圈</td>
+          <td class="r">1.7</td><td class="r"><span class="pct up">+134%</span></td>
+          <td class="r">2,015</td><td class="r"><span class="pct up">+16%</span></td>
+          <td class="r">46.7</td><td class="r"><span class="pct up">+2%</span></td>
+          <td class="r">3.83</td><td class="r"><span class="pct down">-24%</span></td>
+        </tr>
+
+        <!-- 之禾 整体: 曝光环比-34%, < 10% → 预警 -->
+        <tr class="tree-parent tree-warn">
+          <td style="padding-left:16px;font-weight:600;">⚠️ 之禾</td>
+          <td class="r">4.0</td><td class="r"><span class="pct down">-2%</span></td>
+          <td class="r">220</td><td class="r"><span class="pct down warn-text">-34%</span></td>
+          <td class="r">~</td><td class="r"><span class="pct flat">~</span></td>
+          <td class="r">9.70</td><td class="r"><span class="pct flat">0%</span></td>
+        </tr>
+        <tr class="tree-child">
+          <td style="padding-left:32px;color:var(--text-2);">微信朋友圈</td>
+          <td class="r">3.6</td><td class="r"><span class="pct up">+15%</span></td>
+          <td class="r">186</td><td class="r"><span class="pct down">-33%</span></td>
+          <td class="r">~</td><td class="r"><span class="pct flat">~</span></td>
+          <td class="r">9.70</td><td class="r"><span class="pct flat">0%</span></td>
+        </tr>
+        <tr class="tree-child">
+          <td style="padding-left:32px;color:var(--text-2);">微信视频号</td>
+          <td class="r">0.4</td><td class="r"><span class="pct down">-57%</span></td>
+          <td class="r">119</td><td class="r"><span class="pct down">-33%</span></td>
+          <td class="r">~</td><td class="r"><span class="pct flat">~</span></td>
+          <td class="r">9.76</td><td class="r"><span class="pct flat">0%</span></td>
+        </tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">服饰中心 · 专项数据监控看板 — 由傻福 🦞 自动生成</div>
+
+<script>
+function switchTab(idx){
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',i===idx);});
+  document.querySelectorAll('.panel').forEach((p,i)=>{p.classList.toggle('active',i===idx);});
+}
+</script>
+</body>
+</html>
