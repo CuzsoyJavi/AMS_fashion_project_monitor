@@ -138,9 +138,7 @@
 
   <!-- 黑榜预警汇总 -->
   <div style="margin-bottom:20px;">
-    <!-- 红色长条：多榜客户 -->
-    <div id="warn-multi" style="background:#F8F5FF;border:1px solid #DDD6FE;border-radius:var(--radius);padding:12px 16px;margin-bottom:10px;"></div>
-    <!-- 三个并列色块 -->
+    <!-- 两个并列色块 -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="warn-grid">
       <div id="warn-d" style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:var(--radius);padding:10px 14px;"></div>
       <div id="warn-f" style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius);padding:10px 14px;"></div>
@@ -266,32 +264,11 @@ function renderDate(date) {
   // === 黑榜预警色块 ===
   if(d.board){
     const dbMap={},fbMap={};
-    d.board.db.forEach(r=>{dbMap[r[1]]={ind:r[0],v:r[11]};});
-    d.board.fb.forEach(r=>{fbMap[r[1]]={ind:r[0],v:r[11]};});
-    const allNames=new Set([...Object.keys(dbMap),...Object.keys(fbMap)]);
-    const multi=[],onlyD=[],onlyF=[];
-    allNames.forEach(name=>{
-      const inD=!!dbMap[name],inF=!!fbMap[name];
-      const cnt=(inD?1:0)+(inF?1:0);
-      const ind=(dbMap[name]||fbMap[name]).ind;
-      if(cnt>=2) multi.push({name,ind,inD,inF});
-      else if(inD) onlyD.push({name,ind});
-      else onlyF.push({name,ind});
-    });
-    // Dots helper
-    const dot=(on,color,label)=>on?'<span style="display:inline-flex;align-items:center;gap:2px;margin:0 2px;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+color+';"></span><span style="font-size:8px;color:'+color+';font-weight:500;">'+label+'</span></span>':'';
-    // Purple banner
-    let mh='<div style="font-size:11px;font-weight:700;color:#7C3AED;margin-bottom:8px;">⚠️ 重点关注 · 双榜客户</div>';
-    if(multi.length===0){mh+='<div style="font-size:11px;color:var(--text-3);">今日无双榜交叉客户 ✅</div>';}
-    else{
-      mh+='<div style="display:flex;flex-wrap:wrap;gap:8px;">';
-      multi.forEach(m=>{
-        const dots=dot(m.inD,'#D97706','勤奋')+dot(m.inF,'#16A34A','新鲜');
-        mh+='<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.7);border-radius:6px;padding:4px 10px;font-size:11px;"><span style="font-weight:600;">'+m.name+'</span><span class="tag" style="font-size:8px;">'+m.ind+'</span>'+dots+'</div>';
-      });
-      mh+='</div>';
-    }
-    document.getElementById('warn-multi').innerHTML=mh;
+    d.board.db.forEach(r=>{dbMap[r[1]]={ind:r[0]};});
+    d.board.fb.forEach(r=>{fbMap[r[1]]={ind:r[0]};});
+    const onlyD=[],onlyF=[];
+    Object.keys(dbMap).forEach(name=>{if(!fbMap[name]) onlyD.push({name,ind:dbMap[name].ind});});
+    Object.keys(fbMap).forEach(name=>{if(!dbMap[name]) onlyF.push({name,ind:fbMap[name].ind});});
     // Two blocks
     function singleBlock(items,label,color,tip){
       let h='<div style="font-size:10px;font-weight:700;color:'+color+';margin-bottom:2px;">'+label+' ('+items.length+')</div>';
