@@ -58,7 +58,7 @@
   .bt th:first-child{padding-left:12px;}
   .bt td{padding:4px 6px;border-bottom:1px solid #F3F4F6;font-variant-numeric:tabular-nums;}
   .bt td:first-child{padding-left:12px;}.bt tr:last-child td{border-bottom:none;}
-  .rr{background:var(--red-bg);}.bb{background:var(--black-bg);}
+  .rr{background:var(--red-bg);}.ry{background:#FFFBEB;}.rg{background:#F0FDF4;}.bb{background:var(--black-bg);}
   .tag{display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:500;background:var(--blue-light);color:var(--blue);}
   .section-desc{font-size:12px;color:var(--text-3);margin-bottom:16px;}
   .footer{text-align:center;padding:28px;color:var(--text-3);font-size:11px;}
@@ -136,22 +136,13 @@
     </table></div>
   </div>
 
-  <!-- 黑榜预警汇总 -->
-  <div style="margin-bottom:20px;">
-    <!-- 两个并列色块 -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="warn-grid">
-      <div id="warn-d" style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:var(--radius);padding:10px 14px;"></div>
-      <div id="warn-f" style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius);padding:10px 14px;"></div>
-    </div>
-  </div>
-
-  <!-- 红黑榜 3栏 -->
+  <!-- 红黑榜 -->
   <div class="board-grid">
     <!-- 新建勤奋度 -->
     <div class="board-card">
       <div class="board-header">新建勤奋度 · 红黑榜</div>
       <div class="board-rule"><b>红榜：</b>新建去重创意数环比 > +20%，按新建勤奋度（=新建去重创意数÷在线去重创意数）从高到低取 Top10<br><b>黑榜：</b>新建去重创意数环比 < -20%，按勤奋度从低到高取 Top10<br><span style="color:var(--text-3);font-size:8.5px;">仅消耗≥1万的客户可上榜</span></div>
-      <div class="board-label"><span class="dot dot-r"></span>红榜 TOP 5</div>
+      <div class="board-label"><span class="dot" style="background:#D97706;"></span>红榜 TOP 5</div>
       <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗</th><th class="r">环比</th><th class="r">新建数</th><th class="r">环比</th><th class="r">在线数</th><th class="r">环比</th><th class="r">勤奋度</th></tr></thead><tbody id="board-dr"></tbody></table></div>
       <div class="board-label"><span class="dot dot-b"></span>黑榜 TOP 10</div>
       <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗</th><th class="r">环比</th><th class="r">新建数</th><th class="r">环比</th><th class="r">在线数</th><th class="r">环比</th><th class="r">勤奋度</th></tr></thead><tbody id="board-db"></tbody></table></div>
@@ -160,7 +151,7 @@
     <div class="board-card">
       <div class="board-header">新建新鲜度 · 红黑榜</div>
       <div class="board-rule"><b>红榜：</b>新建全新创意数环比 > +20%，按新鲜率（=新建全新创意数÷新建去重创意数）从高到低取 Top10<br><b>黑榜：</b>全新创意数环比 < -20%，按新鲜率从低到高取 Top10<br><span style="color:var(--text-3);font-size:8.5px;">仅消耗≥1万的客户可上榜</span></div>
-      <div class="board-label"><span class="dot dot-r"></span>红榜 TOP 5</div>
+      <div class="board-label"><span class="dot" style="background:#16A34A;"></span>红榜 TOP 5</div>
       <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗</th><th class="r">环比</th><th class="r">全新数</th><th class="r">环比</th><th class="r">新建数</th><th class="r">环比</th><th class="r">新鲜率</th></tr></thead><tbody id="board-fr"></tbody></table></div>
       <div class="board-label"><span class="dot dot-b"></span>黑榜 TOP 10</div>
       <div class="table-scroll"><table class="bt"><thead><tr><th>行业</th><th>客户</th><th class="r">消耗</th><th class="r">环比</th><th class="r">全新数</th><th class="r">环比</th><th class="r">新建数</th><th class="r">环比</th><th class="r">新鲜率</th></tr></thead><tbody id="board-fb"></tbody></table></div>
@@ -244,9 +235,9 @@ function renderDate(date) {
     return h;
   }
   if(d.board){
-    document.getElementById('board-dr').innerHTML=bHtml(d.board.dr,'rr');
+    document.getElementById('board-dr').innerHTML=bHtml(d.board.dr,'ry');
     document.getElementById('board-db').innerHTML=bHtml(d.board.db,'bb');
-    document.getElementById('board-fr').innerHTML=bHtml(d.board.fr,'rr');
+    document.getElementById('board-fr').innerHTML=bHtml(d.board.fr,'rg');
     document.getElementById('board-fb').innerHTML=bHtml(d.board.fb,'bb');
   }
 
@@ -261,28 +252,6 @@ function renderDate(date) {
   });
   document.getElementById('s3-tbody').innerHTML=tree;
 
-  // === 黑榜预警色块 ===
-  if(d.board){
-    const dbMap={},fbMap={};
-    d.board.db.forEach(r=>{dbMap[r[1]]={ind:r[0]};});
-    d.board.fb.forEach(r=>{fbMap[r[1]]={ind:r[0]};});
-    const onlyD=[],onlyF=[];
-    Object.keys(dbMap).forEach(name=>{if(!fbMap[name]) onlyD.push({name,ind:dbMap[name].ind});});
-    Object.keys(fbMap).forEach(name=>{if(!dbMap[name]) onlyF.push({name,ind:fbMap[name].ind});});
-    // Two blocks
-    function singleBlock(items,label,color,tip){
-      let h='<div style="font-size:10px;font-weight:700;color:'+color+';margin-bottom:2px;">'+label+' ('+items.length+')</div>';
-      h+='<div style="font-size:8.5px;color:var(--text-3);line-height:1.4;margin-bottom:8px;">'+tip+'</div>';
-      h+='<div style="display:flex;flex-wrap:wrap;gap:4px;">';
-      items.forEach(it=>{
-        h+='<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;background:rgba(255,255,255,0.6);border-radius:4px;padding:2px 7px;">'+it.name+' <span class="tag" style="font-size:8px;padding:0 4px;">'+it.ind+'</span></span>';
-      });
-      if(items.length===0) h+='<span style="font-size:10px;color:var(--text-3);">无</span>';
-      h+='</div>';
-      return h;
-    }
-    document.getElementById('warn-d').innerHTML=singleBlock(onlyD,'仅勤奋度黑榜','#B45309','创意新建数少，提醒客户进行素材裂变，增加非重复创意的上新数量');
-    document.getElementById('warn-f').innerHTML=singleBlock(onlyF,'仅新鲜度黑榜','#15803D','上新创意中首次出现的全新创意占比低，请提醒客户适当增加新片段混剪');
   }
 }
 
