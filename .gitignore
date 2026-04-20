@@ -1,4 +1,8 @@
 *.csv
 *.md
+*.xlsx
 日报自动化/
+日报源数据/
+版本存档/
 .codebuddy/
+.DS_Store
