@@ -1,0 +1,14 @@
+# 服饰看板更新工具 · 配置示例
+# 复制本文件为 config.txt，修改下面的路径为你自己的实际路径
+
+# 工作区根目录（包含 index.html、KA名单、日报源数据/ 等）
+WORKSPACE_DIR=/Users/your_username/Desktop/服饰看板更新工具
+
+# 9张CSV源数据目录
+SRC_DIR=/Users/your_username/Desktop/服饰看板更新工具/日报源数据
+
+# 看板HTML文件路径
+HTML_FILE=/Users/your_username/Desktop/服饰看板更新工具/index.html
+
+# 竞价KA客户名单xlsx路径
+KA_FILE=/Users/your_username/Desktop/服饰看板更新工具/竞价KA客户名单.xlsx
