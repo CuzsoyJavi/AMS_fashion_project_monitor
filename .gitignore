@@ -1,8 +1,11 @@
 *.csv
 *.md
 *.xlsx
+*.zip
 日报自动化/
 日报源数据/
 版本存档/
+_移交包_看板更新工具/
+_移交包_看板更新工具.zip
 .codebuddy/
 .DS_Store
