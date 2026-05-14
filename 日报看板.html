@@ -30,6 +30,28 @@
   .tab{padding:10px 18px;font-size:13px;font-weight:500;color:var(--text-3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;flex-shrink:0;}
   .tab:hover{color:var(--text-2);}
   .tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600;}
+
+  /* ========== 顶部大切换 Bar ========== */
+  .board-switcher{background:linear-gradient(90deg,#1a1d2e 0%,#2a2f4a 100%);padding:0;border-bottom:1px solid #1a1d2e;}
+  .bs-inner{max-width:1320px;margin:0 auto;padding:10px 28px;display:flex;gap:8px;align-items:center;}
+  .bs-btn{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.12);padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit;}
+  .bs-btn:hover{background:rgba(255,255,255,0.15);color:#fff;}
+  .bs-btn.active{background:rgba(255,255,255,0.95);color:#1a1d2e;font-weight:600;border-color:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+  .board-container{display:none;}
+  .board-container.active{display:block;}
+
+  /* ========== 放量追击 - 诊断 banner ========== */
+  .fl-diagnose{margin:0 2px 14px;padding:14px 18px;border-radius:10px;font-size:13px;line-height:1.6;}
+  .fl-diagnose.normal{background:#F0F9FF;border:1px solid #BAE6FD;color:#075985;}
+  .fl-diagnose.warning{background:#FEF2F2;border:1px solid #FCA5A5;color:#991B1B;font-weight:600;}
+
+  /* ========== SVG 折线图 ========== */
+  .fl-chart-svg{width:100%;height:340px;}
+  .fl-legend{display:flex;gap:16px;flex-wrap:wrap;padding:4px 8px 12px;font-size:12px;}
+  .fl-legend-item{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;padding:4px 8px;border-radius:4px;transition:all .15s;}
+  .fl-legend-item:hover{background:#F1F5F9;}
+  .fl-legend-item.hidden{opacity:0.35;}
+  .fl-legend-dot{width:14px;height:3px;border-radius:2px;}
   .container{max-width:1320px;margin:0 auto;padding:24px 28px 40px;}
   .panel{display:none;}
   .panel.active{display:block;}
@@ -155,6 +177,17 @@
 </style>
 </head>
 <body>
+
+<!-- ========== 顶部 大切换 Bar ========== -->
+<div class="board-switcher">
+  <div class="bs-inner">
+    <button class="bs-btn active" onclick="switchBoard('supply')" id="bsBtn-supply">🎨 创意供给看板</button>
+    <button class="bs-btn" onclick="switchBoard('fanliang')" id="bsBtn-fanliang">🚀 放量追击看板</button>
+  </div>
+</div>
+
+<!-- ========== 创意供给看板 ========== -->
+<div id="board-supply" class="board-container active">
 
 <div class="header">
   <div class="header-inner">
@@ -320,6 +353,94 @@
 
 
 </div>
+</div>
+<!-- ========== 创意供给看板 结束 ========== -->
+
+
+<!-- ========== 放量追击看板 ========== -->
+<div id="board-fanliang" class="board-container">
+
+  <div class="header">
+    <div class="header-inner">
+      <h1>🚀 服饰中心 · 放量追击看板</h1>
+      <div class="date-select">
+        <span>监控日期</span>
+        <select id="fanliangDateSelect" onchange="renderFanliang(this.value)">
+          <option value="2026-05-13" selected>2026-05-13</option>
+        </select>
+        <span style="color:var(--text-3);font-size:11px;margin-left:4px;">每日环比前一日</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchFanliangTab(0)">🌐 向外看 · 商消大盘对比</div>
+    <div class="tab" onclick="switchFanliangTab(1)">🎯 向内看 · 服饰中心细分</div>
+  </div>
+
+  <div class="container">
+
+    <!-- 向外看 panel -->
+    <div class="panel active" id="fpanel0">
+      <div id="fl-diagnose" class="fl-diagnose"></div>
+      <div class="table-card">
+        <div class="table-title"><span>行一·商消业务部分行业·视频号竞价数据（环比昨日）</span></div>
+        <div class="table-scroll"><table>
+          <thead><tr>
+            <th>行一中心</th>
+            <th class="r k1">消耗(万)</th><th class="r k1">消耗环比</th>
+            <th class="r k2">曝光量(千次)</th><th class="r k2">曝光环比</th>
+            <th class="r k3">竞价CPM(元)</th><th class="r k3">CPM环比</th>
+          </tr></thead>
+          <tbody id="fl-mainboard"></tbody>
+        </table></div>
+      </div>
+
+      <div class="table-card" style="margin-top:14px;">
+        <div class="table-title">
+          <span>近14天·行一各中心·视频号曝光量趋势（千次）</span>
+          <span class="v1-scope" style="margin-left:8px;">点击右侧图例可隐藏对应中心</span>
+        </div>
+        <div id="fl-chart" style="padding:12px 8px;"></div>
+      </div>
+    </div>
+
+    <!-- 向内看 panel -->
+    <div class="panel" id="fpanel1">
+      <div style="font-size:11px;color:var(--text-3);margin:2px 2px 10px;">注：以下数据均为<b>服饰中心·视频号位</b>口径（每日环比昨日）</div>
+      
+      <div class="table-card">
+        <div class="table-title"><span>分链路明细（按消耗降序）</span></div>
+        <div class="table-scroll"><table>
+          <thead><tr>
+            <th>链路</th>
+            <th class="r k1">消耗(万)</th><th class="r k1">环比</th>
+            <th class="r k2">曝光量(千次)</th><th class="r k2">环比</th>
+            <th class="r k3">曝光创意数</th><th class="r k3">环比</th>
+            <th class="r">广告数</th><th class="r">环比</th>
+          </tr></thead>
+          <tbody id="fl-links"></tbody>
+        </table></div>
+      </div>
+
+      <div class="table-card" style="margin-top:14px;">
+        <div class="table-title"><span>分行业明细（一级行业汇总 + 二级行业明细，按消耗降序）</span></div>
+        <div class="table-scroll"><table>
+          <thead><tr>
+            <th>行业</th>
+            <th class="r k1">消耗(万)</th><th class="r k1">环比</th>
+            <th class="r k2">曝光量(千次)</th><th class="r k2">环比</th>
+            <th class="r k3">曝光创意数</th><th class="r k3">环比</th>
+            <th class="r">广告数</th><th class="r">环比</th>
+          </tr></thead>
+          <tbody id="fl-industries"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- ========== 放量追击看板 结束 ========== -->
 
 <div class="footer">服饰中心 · 创意供给监控看板 — 由傻福 🦞 自动生成</div>
 
@@ -484,9 +605,248 @@ function renderDate(date){
 }
 
 function switchTab(idx){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
-  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  // 仅在创意供给看板内切换
+  const supply = document.getElementById('board-supply');
+  supply.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  supply.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
 }
+
+// ============== 大切换：创意供给 ↔ 放量追击 ==============
+function switchBoard(key){
+  const supply = document.getElementById('board-supply');
+  const fanliang = document.getElementById('board-fanliang');
+  if(key==='supply'){
+    supply.classList.add('active'); fanliang.classList.remove('active');
+    document.getElementById('bsBtn-supply').classList.add('active');
+    document.getElementById('bsBtn-fanliang').classList.remove('active');
+  } else {
+    supply.classList.remove('active'); fanliang.classList.add('active');
+    document.getElementById('bsBtn-supply').classList.remove('active');
+    document.getElementById('bsBtn-fanliang').classList.add('active');
+    // 渲染放量数据（首次进入时）
+    renderFanliang(document.getElementById('fanliangDateSelect').value);
+  }
+}
+
+// ============== 放量追击 · Tab 切换 ==============
+function switchFanliangTab(idx){
+  const fl = document.getElementById('board-fanliang');
+  fl.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  fl.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  // 切到向外看时重新渲染图（响应宽度）
+  if(idx===0) drawFanliangChart();
+}
+
+// ============== 放量追击 · 渲染数据 ==============
+const FL_DATA = {"2026-05-13":{"mainboard":{"date":"2026-05-13","summary":[{"name":"服饰","cost":8280764.31,"cost_pct":-5.88,"expo":105897.1,"expo_pct":-10.03,"cpm":78.2,"cpm_pct":4.62,"highlight":true},{"name":"食品饮料","cost":7539399.6,"cost_pct":-4.96,"expo":74850.9,"expo_pct":-15.33,"cpm":100.73,"cpm_pct":12.26},{"name":"美护","cost":6805661.12,"cost_pct":-6.47,"expo":92464.2,"expo_pct":-7.53,"cpm":73.6,"cpm_pct":1.15},{"name":"消电日百","cost":5996509.48,"cost_pct":-4.01,"expo":75875.3,"expo_pct":-16.35,"cpm":79.03,"cpm_pct":14.75},{"name":"总体","cost":28622334.52,"cost_pct":-5.39,"expo":349087.5,"expo_pct":-12.03,"cpm":81.99,"cpm_pct":7.54,"total":true}],"trend":{"dates":["04-30","05-01","05-02","05-03","05-04","05-05","05-06","05-07","05-08","05-09","05-10","05-11","05-12","05-13"],"服饰":[97354.11,103466.31,100298.31,89257.3,95833.9,100584.1,96950.96,95276.45,101266.91,111586.56,128605.1,120467.42,117707.29,122292.02],"食品饮料":[86171.98,81710.58,80379.18,79688.53,74685.97,74233.63,80909.11,87227.86,89791.31,91036.17,84287.33,91980.33,88989.49,95908.19],"美护":[91927.14,109367.28,111014.76,106415.72,105419.45,105963.4,92085.5,96258.61,99548.42,108825.5,137419.23,103105.0,102720.55,101606.58],"消电日百":[67990.57,70959.1,77946.29,79526.28,73314.58,73235.14,74628.67,77576.55,73854.01,76036.21,75872.38,83332.15,90700.55,87616.51]},"diagnose":{"msg":"今日大盘整体曝光跌 -12.0%，服饰曝光跌 -10.0%（行一第2），消耗跌 -5.9%（行一第3），CPM +4.6%。","type":"normal"}},"inner_links":[{"name":"加粉","cost":71.146250421,"cost_pct":1.9641175688875978,"expo":10024.204,"expo_pct":3.6995810618045777,"creative":11127.0,"creative_pct":0.660394427356613,"ads":2399.0,"ads_pct":1.9549511262218444},{"name":"品宣","cost":15.080538079,"cost_pct":91.1807544962202,"expo":6124.943,"expo_pct":147.72647668599154,"creative":351.0,"creative_pct":3.8461538461538463,"ads":99.0,"ads_pct":8.791208791208792},{"name":"小店","cost":235.34547814,"cost_pct":-5.72080179443261,"expo":33511.634,"expo_pct":-6.418208280068409,"creative":51454.0,"creative_pct":-5.562998990547857,"ads":39052.0,"ads_pct":-6.226437747628768},{"name":"直播","cost":399.581464553,"cost_pct":12.291400294293108,"expo":54504.424,"expo_pct":5.89514527071227,"creative":83456.0,"creative_pct":0.40906684633524226,"ads":33473.0,"ads_pct":1.7756696767916322},{"name":"直购","cost":1.7479794450000001,"cost_pct":-30.93515248519429,"expo":75.178,"expo_pct":-28.26800503797565,"creative":303.0,"creative_pct":-9.00900900900901,"ads":57.0,"ads_pct":9.615384615384617},{"name":"CID","cost":194.229870214,"cost_pct":-0.9693443867221788,"expo":18051.634,"expo_pct":-4.845643558427617,"creative":19825.0,"creative_pct":-7.7778294645764525,"ads":8802.0,"ads_pct":-3.104359313077939}],"inner_total":{"name":"整体","cost":917.1315808520001,"cost_pct":4.0073128271421785,"expo":122292.017,"expo_pct":3.204437766577358,"creative":166511.0,"creative_pct":-2.522538344456153,"ads":83783.0,"ads_pct":-3.1969959560947427},"inner_industries":[{"name":"服饰鞋包(汇总)","l1":"服饰鞋包","level":1,"cost":417.742698947,"cost_pct":13.91578140167258,"expo":55695.655,"expo_pct":7.666599078213082,"creative":81480.0,"creative_pct":-0.6159663353052388,"ads":37169.0,"ads_pct":-1.0146471371504662},{"name":"运动户外(汇总)","l1":"运动户外","level":1,"cost":61.452820810000006,"cost_pct":6.052064016361642,"expo":12460.402,"expo_pct":34.775018969026014,"creative":15379.0,"creative_pct":-3.0144415715456896,"ads":6745.0,"ads_pct":-5.545441814871867},{"name":"珠宝配饰(汇总)","l1":"珠宝配饰","level":1,"cost":128.88542690999998,"cost_pct":-8.025480065845297,"expo":15420.19,"expo_pct":-7.933777618033772,"creative":21410.0,"creative_pct":-3.6323536030967274,"ads":9018.0,"ads_pct":-3.6332549690104723},{"name":"服饰奢品(汇总)","l1":"服饰奢品","level":1,"cost":18.870058631000003,"cost_pct":63.41559953165755,"expo":2280.595,"expo_pct":47.83810764732954,"creative":2913.0,"creative_pct":-7.229299363057325,"ads":1848.0,"ads_pct":-4.987146529562982},{"name":"综合服饰(汇总)","l1":"综合服饰","level":1,"cost":266.396269443,"cost_pct":-4.3914522913504666,"expo":31235.617,"expo_pct":-6.302671459499569,"creative":38445.0,"creative_pct":-4.043429427180832,"ads":21731.0,"ads_pct":-2.6127095097248363},{"name":"女装(童装)","l1":"服饰鞋包","level":2,"cost":0.0,"cost_pct":0.0,"expo":0.035,"expo_pct":-18.604651162790685,"creative":1.0,"creative_pct":-50.0,"ads":3.0,"ads_pct":0.0},{"name":"男装","l1":"服饰鞋包","level":2,"cost":56.458601231,"cost_pct":7.242638303681313,"expo":7938.038,"expo_pct":10.831701512584388,"creative":12877.0,"creative_pct":1.337845282127961,"ads":4653.0,"ads_pct":3.1936127744510974},{"name":"贴身衣物","l1":"服饰鞋包","level":2,"cost":202.34152709399999,"cost_pct":25.044453942911826,"expo":23932.22,"expo_pct":13.940441005250914,"creative":28790.0,"creative_pct":0.971486690281626,"ads":13131.0,"ads_pct":-1.4633048176497072},{"name":"其他","l1":"服饰鞋包","level":2,"cost":0.245246,"cost_pct":-35.5529919403793,"expo":77.808,"expo_pct":-23.32978597611445,"creative":658.0,"creative_pct":-20.531400966183575,"ads":733.0,"ads_pct":-17.547806524184477},{"name":"女装","l1":"服饰鞋包","level":2,"cost":53.631195813000005,"cost_pct":2.9500318476318586,"expo":6893.037,"expo_pct":0.9707524763555782,"creative":9506.0,"creative_pct":-3.8048977939688324,"ads":5829.0,"ads_pct":-6.825447570332481},{"name":"箱包","l1":"服饰鞋包","level":2,"cost":18.836344893,"cost_pct":29.056242899245927,"expo":2960.988,"expo_pct":18.196838251701607,"creative":4412.0,"creative_pct":-2.0861074123391035,"ads":1761.0,"ads_pct":-6.528662420382165},{"name":"鞋靴","l1":"服饰鞋包","level":2,"cost":26.716438689000004,"cost_pct":23.6143440376316,"expo":4400.754,"expo_pct":10.45351218382138,"creative":7569.0,"creative_pct":2.2285251215559154,"ads":3768.0,"ads_pct":0.2127659574468085},{"name":"其他","l1":"服饰鞋包","level":2,"cost":59.513345227,"cost_pct":-6.3775890771254655,"expo":9492.775,"expo_pct":-6.435152987522562,"creative":17694.0,"creative_pct":-2.6464924346629988,"ads":7130.0,"ads_pct":-1.790633608815427},{"name":"运动鞋服","l1":"运动户外","level":2,"cost":33.70980469,"cost_pct":26.26734760722173,"expo":8208.565,"expo_pct":92.61670365585182,"creative":6716.0,"creative_pct":-2.990033222591362,"ads":3240.0,"ads_pct":-6.059727457233981},{"name":"运动用品","l1":"运动户外","level":2,"cost":9.24812724,"cost_pct":-1.8894815084390622,"expo":1690.846,"expo_pct":0.6202604939351581,"creative":4229.0,"creative_pct":-1.1453950444132772,"ads":2228.0,"ads_pct":-5.8724123362906635},{"name":"其他","l1":"运动户外","level":2,"cost":18.494888879999998,"cost_pct":-15.248520413664544,"expo":2560.991,"expo_pct":-22.471881200227894,"creative":4436.0,"creative_pct":-4.76599398883641,"ads":1255.0,"ads_pct":-3.0139103554868623},{"name":"珠宝文玩闭环","l1":"珠宝配饰","level":2,"cost":26.416425477,"cost_pct":-13.905776252692567,"expo":3716.881,"expo_pct":-13.533499106809902,"creative":9814.0,"creative_pct":-2.3676880222841223,"ads":5436.0,"ads_pct":-3.7194473963868226},{"name":"配饰闭环","l1":"珠宝配饰","level":2,"cost":30.029989111000003,"cost_pct":-8.0811152404487,"expo":3281.694,"expo_pct":-12.186573568262846,"creative":5692.0,"creative_pct":-7.866623502751699,"ads":2283.0,"ads_pct":-1.297016861219196},{"name":"珠宝私域","l1":"珠宝配饰","level":2,"cost":60.515814497,"cost_pct":4.590472095267129,"expo":7361.152,"expo_pct":7.671458613165837,"creative":4480.0,"creative_pct":0.3809097019941743,"ads":929.0,"ads_pct":0.8686210640608035},{"name":"其他","l1":"珠宝配饰","level":2,"cost":11.923197825,"cost_pct":-36.97643498602805,"expo":1060.463,"expo_pct":-43.489683110206165,"creative":1427.0,"creative_pct":-6.548788474132286,"ads":411.0,"ads_pct":-1.674641148325359},{"name":"奢品服饰","l1":"服饰奢品","level":2,"cost":1.6057611269999998,"cost_pct":32.9814669342973,"expo":244.539,"expo_pct":3.959171180056621,"creative":92.0,"creative_pct":9.523809523809524,"ads":43.0,"ads_pct":2.380952380952381},{"name":"国际服饰","l1":"服饰奢品","level":2,"cost":0.199995,"cost_pct":0.001000035001226043,"expo":55.815,"expo_pct":-8.950768327297643,"creative":14.0,"creative_pct":7.6923076923076925,"ads":1.0,"ads_pct":0.0},{"name":"本土服饰","l1":"服饰奢品","level":2,"cost":12.050395504,"cost_pct":60.79222985675429,"expo":1083.173,"expo_pct":50.19641666123567,"creative":2653.0,"creative_pct":-7.36731843575419,"ads":1692.0,"ads_pct":-5.422023476802683},{"name":"钟表眼镜","l1":"服饰奢品","level":2,"cost":0.45708699999999997,"cost_pct":3.3746547217169187,"expo":109.542,"expo_pct":-9.847169298888133,"creative":36.0,"creative_pct":-5.263157894736842,"ads":47.0,"ads_pct":2.1739130434782608},{"name":"珠宝饰品","l1":"服饰奢品","level":2,"cost":4.55682,"cost_pct":106.82490130381541,"expo":787.526,"expo_pct":95.21049813595621,"creative":121.0,"creative_pct":-15.972222222222221,"ads":64.0,"ads_pct":-3.0303030303030303},{"name":"跑品客户","l1":"综合服饰","level":2,"cost":260.86299876199996,"cost_pct":-4.213805784890397,"expo":30375.605,"expo_pct":-6.101886404123808,"creative":36959.0,"creative_pct":-3.9676765577092965,"ads":21421.0,"ads_pct":-2.4144685891303355},{"name":"其他","l1":"综合服饰","level":2,"cost":5.533270681,"cost_pct":-12.078822809813513,"expo":860.012,"expo_pct":-12.882299551046211,"creative":1487.0,"creative_pct":-5.886075949367089,"ads":347.0,"ads_pct":11.57556270096463}]}};
+
+function fmtNum(n, digits){
+  if(n===null||n===undefined||isNaN(n)) return '-';
+  if(digits===undefined) digits=0;
+  return Number(n).toLocaleString('zh-CN',{minimumFractionDigits:digits,maximumFractionDigits:digits});
+}
+function fmtPct(p){
+  if(p===null||p===undefined||isNaN(p)) return '-';
+  const sign = p>0?'+':'';
+  return sign+p.toFixed(1)+'%';
+}
+function pctCls(p){
+  if(p===null||p===undefined||isNaN(p)) return 'flat';
+  return p>0?'up':p<0?'down':'flat';
+}
+function pctArrow(c){return c==='up'?'↑':c==='down'?'↓':'→';}
+
+let _flCurrentDate = '2026-05-13';
+let _flHiddenSeries = new Set();
+
+function renderFanliang(date){
+  _flCurrentDate = date;
+  const d = FL_DATA[date];
+  if(!d){return;}
+  // 诊断
+  const dg = d.mainboard.diagnose;
+  const elDg = document.getElementById('fl-diagnose');
+  elDg.className = 'fl-diagnose '+(dg.type||'normal');
+  elDg.textContent = dg.msg;
+  
+  // 大盘表
+  const mb = d.mainboard.summary;
+  const mbHtml = mb.map(s=>{
+    const isFs = s.name==='服饰';
+    const isTotal = s.total;
+    const nameCell = isFs ? '<td style="font-weight:700;color:#1D4ED8;">🎯 '+s.name+'</td>' :
+                     isTotal ? '<td style="font-weight:700;background:#F8FAFC;">'+s.name+'</td>' :
+                     '<td>'+s.name+'</td>';
+    const cellPct = null; // 不用
+    const cell = (val,pct,kcls,digits)=>{
+      const c = pctCls(pct);
+      const cls = 'r '+(kcls||'');
+      return '<td class="'+cls+'">'+fmtNum(val,digits||0)+'</td><td class="'+cls+'"><span class="pct '+c+'">'+pctArrow(c)+' '+fmtPct(pct)+'</span></td>';
+    };
+    return '<tr'+(isTotal?' style="background:#F8FAFC;"':'')+'>'+nameCell+
+      cell(s.cost/10000, s.cost_pct, 'k1', 1) +  // 消耗：元 → 万元
+      cell(s.expo, s.expo_pct, 'k2', 1) +
+      cell(s.cpm, s.cpm_pct, 'k3', 2) +
+      '</tr>';
+  }).join('');
+  document.getElementById('fl-mainboard').innerHTML = mbHtml;
+  
+  // 趋势图
+  drawFanliangChart();
+  
+  // 向内看 - 分链路
+  const links = d.inner_links.sort((a,b)=>(b.cost||0)-(a.cost||0));
+  const linksHtml = links.map(r=>{
+    const cell = (val,pct,kcls,digits)=>{
+      const c = pctCls(pct);
+      const cls = 'r '+(kcls||'');
+      return '<td class="'+cls+'">'+fmtNum(val,digits||0)+'</td><td class="'+cls+'"><span class="pct '+c+'">'+pctArrow(c)+' '+fmtPct(pct)+'</span></td>';
+    };
+    return '<tr><td>'+r.name+'</td>'+
+      cell(r.cost, r.cost_pct, 'k1', 1)+
+      cell(r.expo, r.expo_pct, 'k2', 1)+
+      cell(r.creative, r.creative_pct, 'k3', 0)+
+      cell(r.ads, r.ads_pct, '', 0)+
+      '</tr>';
+  }).join('');
+  document.getElementById('fl-links').innerHTML = linksHtml;
+  
+  // 向内看 - 分行业（一级 + 二级，按一级分组，二级按消耗降序）
+  const inds = d.inner_industries;
+  // 分组
+  const byL1 = {};
+  inds.forEach(r=>{
+    if(r.level===1){
+      if(!byL1[r.l1]) byL1[r.l1]={summary:null, children:[]};
+      byL1[r.l1].summary = r;
+    } else {
+      if(!byL1[r.l1]) byL1[r.l1]={summary:null, children:[]};
+      byL1[r.l1].children.push(r);
+    }
+  });
+  // 按一级行业消耗降序
+  const l1Order = Object.keys(byL1).sort((a,b)=>{
+    const ca = byL1[a].summary?byL1[a].summary.cost:0;
+    const cb = byL1[b].summary?byL1[b].summary.cost:0;
+    return cb-ca;
+  });
+  let indHtml = '';
+  l1Order.forEach(l1=>{
+    const grp = byL1[l1];
+    if(grp.summary){
+      const r = grp.summary;
+      const cell = (val,pct,kcls,digits)=>{
+        const c = pctCls(pct);
+        const cls = 'r '+(kcls||'');
+        return '<td class="'+cls+'" style="font-weight:600;background:#FAFBFC;">'+fmtNum(val,digits||0)+'</td><td class="'+cls+'" style="background:#FAFBFC;"><span class="pct '+c+'">'+pctArrow(c)+' '+fmtPct(pct)+'</span></td>';
+      };
+      indHtml += '<tr style="background:#FAFBFC;"><td style="font-weight:700;">📂 '+l1+'</td>'+
+        cell(r.cost, r.cost_pct, 'k1', 1)+
+        cell(r.expo, r.expo_pct, 'k2', 1)+
+        cell(r.creative, r.creative_pct, 'k3', 0)+
+        cell(r.ads, r.ads_pct, '', 0)+'</tr>';
+    }
+    // 二级按消耗降序
+    grp.children.sort((a,b)=>(b.cost||0)-(a.cost||0));
+    grp.children.forEach(r=>{
+      const cell = (val,pct,kcls,digits)=>{
+        const c = pctCls(pct);
+        const cls = 'r '+(kcls||'');
+        return '<td class="'+cls+'">'+fmtNum(val,digits||0)+'</td><td class="'+cls+'"><span class="pct '+c+'">'+pctArrow(c)+' '+fmtPct(pct)+'</span></td>';
+      };
+      indHtml += '<tr><td style="padding-left:24px;color:var(--text-2);">└ '+r.name+'</td>'+
+        cell(r.cost, r.cost_pct, 'k1', 1)+
+        cell(r.expo, r.expo_pct, 'k2', 1)+
+        cell(r.creative, r.creative_pct, 'k3', 0)+
+        cell(r.ads, r.ads_pct, '', 0)+'</tr>';
+    });
+  });
+  document.getElementById('fl-industries').innerHTML = indHtml;
+}
+
+// ============== 放量追击 · SVG 折线图 ==============
+function drawFanliangChart(){
+  const d = FL_DATA[_flCurrentDate];
+  if(!d) return;
+  const trend = d.mainboard.trend;
+  const series = ['服饰','食品饮料','美护','消电日百'];
+  const colors = {'服饰':'#1D4ED8','食品饮料':'#16A34A','美护':'#DC2626','消电日百':'#EA580C'};
+  
+  const container = document.getElementById('fl-chart');
+  const w = container.clientWidth || 1200;
+  const h = 380;
+  const padL = 60, padR = 30, padT = 30, padB = 50;
+  const plotW = w - padL - padR;
+  const plotH = h - padT - padB;
+  
+  // 计算 Y 轴范围（仅计可见 series）
+  let yMax = 0, yMin = Infinity;
+  series.forEach(s=>{
+    if(_flHiddenSeries.has(s)) return;
+    trend[s].forEach(v=>{ if(v>yMax)yMax=v; if(v<yMin)yMin=v; });
+  });
+  if(yMax===0){ yMax=1; yMin=0; }
+  // 圆整
+  const range = yMax - yMin;
+  yMax = yMax + range * 0.1;
+  yMin = Math.max(0, yMin - range * 0.1);
+  
+  const dates = trend.dates;
+  const xStep = dates.length > 1 ? plotW / (dates.length-1) : plotW;
+  const xPos = i => padL + i*xStep;
+  const yPos = v => padT + plotH - (v - yMin)/(yMax - yMin) * plotH;
+  
+  // Y 轴网格
+  let svg = '<svg class="fl-chart-svg" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="xMidYMid meet">';
+  const yTicks = 5;
+  for(let i=0;i<=yTicks;i++){
+    const v = yMin + (yMax-yMin)*i/yTicks;
+    const y = yPos(v);
+    svg += '<line x1="'+padL+'" y1="'+y+'" x2="'+(w-padR)+'" y2="'+y+'" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="2,3"/>';
+    svg += '<text x="'+(padL-8)+'" y="'+(y+4)+'" text-anchor="end" font-size="11" fill="#64748B">'+(v/1000).toFixed(0)+'k</text>';
+  }
+  // X 轴标签
+  dates.forEach((dt,i)=>{
+    if(i%2===0 || i===dates.length-1){
+      svg += '<text x="'+xPos(i)+'" y="'+(h-padB+18)+'" text-anchor="middle" font-size="11" fill="#64748B">'+dt+'</text>';
+    }
+  });
+  // 折线
+  series.forEach(s=>{
+    if(_flHiddenSeries.has(s)) return;
+    const data = trend[s];
+    const path = data.map((v,i)=>(i===0?'M':'L')+xPos(i)+','+yPos(v)).join(' ');
+    svg += '<path d="'+path+'" fill="none" stroke="'+colors[s]+'" stroke-width="2.2" stroke-linejoin="round"/>';
+    // 点
+    data.forEach((v,i)=>{
+      svg += '<circle cx="'+xPos(i)+'" cy="'+yPos(v)+'" r="3" fill="'+colors[s]+'"/>';
+    });
+    // 最后一个点的数值
+    const lastI = data.length-1;
+    svg += '<text x="'+(xPos(lastI)+6)+'" y="'+(yPos(data[lastI])-6)+'" font-size="10" font-weight="600" fill="'+colors[s]+'">'+(data[lastI]/1000).toFixed(0)+'k</text>';
+  });
+  svg += '</svg>';
+  
+  // 图例
+  let legend = '<div class="fl-legend">';
+  series.forEach(s=>{
+    const hidden = _flHiddenSeries.has(s)?' hidden':'';
+    legend += '<div class="fl-legend-item'+hidden+'" onclick="toggleSeries(\''+s+'\')">'+
+      '<span class="fl-legend-dot" style="background:'+colors[s]+';"></span>'+s+'</div>';
+  });
+  legend += '</div>';
+  
+  container.innerHTML = legend + svg;
+}
+
+function toggleSeries(s){
+  if(_flHiddenSeries.has(s)) _flHiddenSeries.delete(s);
+  else _flHiddenSeries.add(s);
+  drawFanliangChart();
+}
+window.addEventListener('resize', ()=>{
+  if(document.getElementById('board-fanliang').classList.contains('active')) drawFanliangChart();
+});
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function(){
